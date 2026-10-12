@@ -1,3 +1,6 @@
 {
-  "itemGroup.turtle_dragon_quests.main": "Turtle Dragon Quests"
+  "itemGroup.turtle_dragon_quests.main": "Turtle Dragon Quests",
+  "item.turtle_dragon_quests.quest_journal": "Quest Journal",
+  "item.turtle_dragon_quests.shop_catalog": "System Shop Catalog",
+  "item.turtle_dragon_quests.tdg_coin": "TDG Coin"
 }

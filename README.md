@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-NeoForge 1.21.1 skeleton is in place (`./gradlew build`). Items, quests, TDG Coin, and the System Shop land in later PRs.
+NeoForge 1.21.1 skeleton plus items: Quest Journal, System Shop Catalog, and TDG Coin in the **Turtle Dragon Quests** creative tab. Use is still a no-op. Quest engine, wallet, and shop land in later PRs.
 
 ## Requirements (when the skeleton exists)
 

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "turtle_dragon_quests:item/shop_catalog"
+  }
+}
