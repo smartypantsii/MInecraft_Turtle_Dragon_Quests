@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Repo bootstrap only. The Gradle skeleton, items, quests, and shop land in later PRs. Until then there is no installable jar.
+NeoForge 1.21.1 skeleton is in place (`./gradlew build`). Items, quests, TDG Coin, and the System Shop land in later PRs.
 
 ## Requirements (when the skeleton exists)
 
@@ -74,7 +74,7 @@ Pack JSON uses `{ "item", "count" }` stacks. Tags are `"minecraft:logs"` with **
 - Player wallet: `/tdq currency set <player> 0`
 - System Shop stock: stop the server, delete `<world>/data/turtle_dragon_quests_shop.dat`, restart (stock lazy-reseeds from JSON)
 
-## Build (after PR 1 skeleton)
+## Build
 
 ```bash
 ./gradlew build
