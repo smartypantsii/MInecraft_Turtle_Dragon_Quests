@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.skeleton_crew.desc"
+  },
+  "group": "settling",
+  "icon": "minecraft:bone",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 8,
+      "entity": "minecraft:skeleton",
+      "id": "kill_skeletons"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:iron_edge"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 40
+    },
+    {
+      "type": "item",
+      "count": 16,
+      "item": "minecraft:arrow"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.skeleton_crew.title"
+  }
+}

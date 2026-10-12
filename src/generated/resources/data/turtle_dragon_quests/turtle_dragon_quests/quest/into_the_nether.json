@@ -1,0 +1,30 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.into_the_nether.desc"
+  },
+  "group": "depths",
+  "icon": "minecraft:flint_and_steel",
+  "objectives": [
+    {
+      "type": "visit",
+      "dimension": "minecraft:the_nether",
+      "id": "enter_nether"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:diamond_glint"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 40
+    },
+    {
+      "type": "item",
+      "item": "minecraft:flint_and_steel"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.into_the_nether.title"
+  }
+}

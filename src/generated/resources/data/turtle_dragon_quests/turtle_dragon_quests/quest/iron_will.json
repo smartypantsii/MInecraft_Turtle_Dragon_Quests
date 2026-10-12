@@ -1,0 +1,27 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.iron_will.desc"
+  },
+  "group": "settling",
+  "icon": "minecraft:iron_ingot",
+  "objectives": [
+    {
+      "type": "gather",
+      "count": 8,
+      "id": "iron",
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:cobble_tithe"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 30
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.iron_will.title"
+  }
+}

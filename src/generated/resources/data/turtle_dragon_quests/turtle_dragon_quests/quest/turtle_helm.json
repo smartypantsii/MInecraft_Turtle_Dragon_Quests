@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.turtle_helm.desc"
+  },
+  "group": "tide",
+  "icon": "minecraft:turtle_helmet",
+  "objectives": [
+    {
+      "type": "craft",
+      "count": 1,
+      "id": "make_helm",
+      "item": "minecraft:turtle_helmet"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:scute_duty"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 60
+    },
+    {
+      "type": "item",
+      "count": 8,
+      "item": "minecraft:turtle_scute"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.turtle_helm.title"
+  }
+}

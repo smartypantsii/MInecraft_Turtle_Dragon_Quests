@@ -1,0 +1,38 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.blaze_rods.desc"
+  },
+  "group": "nether",
+  "icon": "minecraft:blaze_rod",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 10,
+      "entity": "minecraft:blaze",
+      "id": "kill_blazes"
+    },
+    {
+      "type": "gather",
+      "count": 4,
+      "id": "rods",
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:into_the_nether"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 100
+    },
+    {
+      "type": "item",
+      "count": 4,
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.blaze_rods.title"
+  }
+}

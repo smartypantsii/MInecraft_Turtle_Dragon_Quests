@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.stone_pick.desc"
+  },
+  "group": "first_light",
+  "icon": "minecraft:stone_pickaxe",
+  "objectives": [
+    {
+      "type": "craft",
+      "count": 1,
+      "id": "make_pick",
+      "item": "minecraft:stone_pickaxe"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:crafting_bench"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 15
+    },
+    {
+      "type": "item",
+      "count": 8,
+      "item": "minecraft:torch"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.stone_pick.title"
+  }
+}

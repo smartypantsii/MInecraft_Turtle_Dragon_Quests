@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.ender_eyes.desc"
+  },
+  "group": "dragon",
+  "icon": "minecraft:ender_eye",
+  "objectives": [
+    {
+      "type": "submit",
+      "count": 12,
+      "id": "turn_in_eyes",
+      "item": "minecraft:ender_eye"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:brew_station"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 120
+    },
+    {
+      "type": "item",
+      "item": "minecraft:ender_eye"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.ender_eyes.title"
+  }
+}

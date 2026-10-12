@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.wheat_tithe.desc"
+  },
+  "group": "settling",
+  "icon": "minecraft:wheat",
+  "objectives": [
+    {
+      "type": "submit",
+      "count": 16,
+      "id": "turn_in_wheat",
+      "item": "minecraft:wheat"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:skeleton_crew"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 25
+    },
+    {
+      "type": "item",
+      "item": "minecraft:hay_block"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.wheat_tithe.title"
+  }
+}

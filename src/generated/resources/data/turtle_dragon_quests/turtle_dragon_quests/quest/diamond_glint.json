@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.diamond_glint.desc"
+  },
+  "group": "depths",
+  "icon": "minecraft:diamond",
+  "objectives": [
+    {
+      "type": "gather",
+      "count": 3,
+      "id": "diamonds",
+      "item": "minecraft:diamond"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:drowned_watch"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 80
+    },
+    {
+      "type": "item",
+      "item": "minecraft:diamond_pickaxe"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.diamond_glint.title"
+  }
+}

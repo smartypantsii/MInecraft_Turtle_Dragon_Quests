@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.cobble_tithe.desc"
+  },
+  "group": "first_light",
+  "icon": "minecraft:cobblestone",
+  "objectives": [
+    {
+      "type": "submit",
+      "count": 16,
+      "id": "turn_in_cobble",
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:night_watch"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 15
+    },
+    {
+      "type": "item",
+      "count": 5,
+      "item": "minecraft:bread"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.cobble_tithe.title"
+  }
+}

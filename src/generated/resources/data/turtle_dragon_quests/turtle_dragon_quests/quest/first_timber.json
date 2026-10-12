@@ -1,0 +1,30 @@
+{
+  "auto_accept": true,
+  "description": {
+    "translate": "quest.turtle_dragon_quests.first_timber.desc"
+  },
+  "group": "first_light",
+  "icon": "minecraft:oak_log",
+  "objectives": [
+    {
+      "type": "gather",
+      "count": 8,
+      "id": "any_logs",
+      "tag": "minecraft:logs"
+    }
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 10
+    },
+    {
+      "type": "item",
+      "count": 16,
+      "item": "minecraft:stick"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.first_timber.title"
+  }
+}

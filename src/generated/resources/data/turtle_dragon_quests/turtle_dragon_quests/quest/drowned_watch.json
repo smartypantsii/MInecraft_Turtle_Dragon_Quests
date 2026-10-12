@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.drowned_watch.desc"
+  },
+  "group": "tide",
+  "icon": "minecraft:heart_of_the_sea",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 8,
+      "entity": "minecraft:drowned",
+      "id": "kill_drowned"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:beach_scouts"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 50
+    },
+    {
+      "type": "item",
+      "item": "minecraft:heart_of_the_sea"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.drowned_watch.title"
+  }
+}

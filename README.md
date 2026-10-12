@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items and the **TDG wallet** are in. `/tdq balance`, `/tdq deposit`, `/tdq withdraw`, and op `/tdq currency *` work. Journal and catalog use is still a no-op. Quests and the System Shop land later.
+Items, the **TDG wallet**, and **quest definitions** are in. `/tdq balance`, `/tdq deposit`, `/tdq withdraw`, and op `/tdq currency *` work. The six-chapter campaign loads from datapacks (`/reload` logs the count). Accept/progress/claim and System Shop land later. Journal and catalog use is still a no-op.
 
 ## Requirements (when the skeleton exists)
 

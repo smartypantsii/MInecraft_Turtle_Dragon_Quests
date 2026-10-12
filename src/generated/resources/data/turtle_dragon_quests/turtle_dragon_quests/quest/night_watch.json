@@ -1,0 +1,27 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.night_watch.desc"
+  },
+  "group": "first_light",
+  "icon": "minecraft:rotten_flesh",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 3,
+      "entity": "minecraft:zombie",
+      "id": "kill_zombies"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:stone_pick"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 20
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.night_watch.title"
+  }
+}

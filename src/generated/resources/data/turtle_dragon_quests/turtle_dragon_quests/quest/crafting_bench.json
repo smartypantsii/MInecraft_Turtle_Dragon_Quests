@@ -1,0 +1,27 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.crafting_bench.desc"
+  },
+  "group": "first_light",
+  "icon": "minecraft:crafting_table",
+  "objectives": [
+    {
+      "type": "craft",
+      "count": 1,
+      "id": "make_bench",
+      "item": "minecraft:crafting_table"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:first_timber"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 10
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.crafting_bench.title"
+  }
+}

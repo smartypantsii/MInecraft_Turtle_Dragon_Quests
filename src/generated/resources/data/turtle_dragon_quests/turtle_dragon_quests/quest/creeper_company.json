@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.creeper_company.desc"
+  },
+  "group": "depths",
+  "icon": "minecraft:gunpowder",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 5,
+      "entity": "minecraft:creeper",
+      "id": "kill_creepers"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:diamond_glint"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 50
+    },
+    {
+      "type": "item",
+      "count": 8,
+      "item": "minecraft:gunpowder"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.creeper_company.title"
+  }
+}

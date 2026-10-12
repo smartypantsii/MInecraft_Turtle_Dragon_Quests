@@ -1,0 +1,32 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.brew_station.desc"
+  },
+  "group": "nether",
+  "icon": "minecraft:brewing_stand",
+  "objectives": [
+    {
+      "type": "craft",
+      "count": 1,
+      "id": "make_stand",
+      "item": "minecraft:brewing_stand"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:blaze_rods"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 80
+    },
+    {
+      "type": "item",
+      "count": 3,
+      "item": "minecraft:magma_cream"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.brew_station.title"
+  }
+}

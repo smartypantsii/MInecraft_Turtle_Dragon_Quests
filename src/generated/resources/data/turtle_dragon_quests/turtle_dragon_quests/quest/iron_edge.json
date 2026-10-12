@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.iron_edge.desc"
+  },
+  "group": "settling",
+  "icon": "minecraft:iron_sword",
+  "objectives": [
+    {
+      "type": "craft",
+      "count": 1,
+      "id": "make_sword",
+      "item": "minecraft:iron_sword"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:iron_will"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 25
+    },
+    {
+      "type": "item",
+      "item": "minecraft:iron_helmet"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.iron_edge.title"
+  }
+}

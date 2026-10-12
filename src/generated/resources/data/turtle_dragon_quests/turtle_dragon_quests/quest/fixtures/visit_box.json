@@ -1,0 +1,22 @@
+{
+  "description": "test only",
+  "objectives": [
+    {
+      "type": "visit",
+      "box": {
+        "max": [
+          16,
+          80,
+          16
+        ],
+        "min": [
+          0,
+          64,
+          0
+        ]
+      },
+      "id": "in_box"
+    }
+  ],
+  "title": "visit box fixture"
+}

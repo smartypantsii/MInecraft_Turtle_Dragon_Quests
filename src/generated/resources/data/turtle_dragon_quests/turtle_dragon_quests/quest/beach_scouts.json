@@ -1,0 +1,26 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.beach_scouts.desc"
+  },
+  "group": "tide",
+  "icon": "minecraft:turtle_egg",
+  "objectives": [
+    {
+      "type": "visit",
+      "biome": "minecraft:beach",
+      "id": "find_beach"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:wheat_tithe"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 20
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.beach_scouts.title"
+  }
+}

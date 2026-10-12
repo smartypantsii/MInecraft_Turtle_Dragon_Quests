@@ -1,0 +1,36 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.the_dragon.desc"
+  },
+  "group": "dragon",
+  "icon": "minecraft:dragon_head",
+  "objectives": [
+    {
+      "type": "kill",
+      "count": 1,
+      "entity": "minecraft:ender_dragon",
+      "id": "kill_dragon"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:ender_eyes"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 500
+    },
+    {
+      "type": "item",
+      "count": 16,
+      "item": "minecraft:ender_pearl"
+    },
+    {
+      "type": "item",
+      "item": "minecraft:enchanted_golden_apple"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.the_dragon.title"
+  }
+}

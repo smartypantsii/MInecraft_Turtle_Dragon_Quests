@@ -1,11 +1,15 @@
 package com.jbarnes.turtledragonquests;
 
 import com.jbarnes.turtledragonquests.command.TDQCommands;
+import com.jbarnes.turtledragonquests.datagen.TDQDatapackProvider;
+import com.jbarnes.turtledragonquests.event.DatapackSyncEvents;
 import com.jbarnes.turtledragonquests.event.PlayerPersistenceEvents;
 import com.jbarnes.turtledragonquests.gametest.CurrencyGameTests;
+import com.jbarnes.turtledragonquests.gametest.QuestCodecGameTests;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
 import com.jbarnes.turtledragonquests.registry.TDQAttachmentTypes;
 import com.jbarnes.turtledragonquests.registry.TDQCreativeTabs;
+import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
 import com.jbarnes.turtledragonquests.registry.TDQItems;
 
 import net.neoforged.bus.api.IEventBus;
@@ -21,7 +25,9 @@ public final class TurtleDragonQuests {
         TDQItems.register(modEventBus);
         TDQCreativeTabs.register(modEventBus);
         TDQAttachmentTypes.register(modEventBus);
+        modEventBus.addListener(TDQDataRegistries::newDatapackRegistries);
         modEventBus.addListener(TDQNetwork::register);
+        modEventBus.addListener(TDQDatapackProvider::gatherData);
         modEventBus.addListener(TurtleDragonQuests::registerGameTests);
         modContainer.registerConfig(ModConfig.Type.COMMON, TDQConfig.SPEC);
 
@@ -29,11 +35,14 @@ public final class TurtleDragonQuests {
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onLogin);
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onClone);
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onDimension);
+        NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onDatapackSync);
+        NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onServerStarted);
 
         TDQ.LOGGER.info("Turtle Dragon Quests {} loading", modContainer.getModInfo().getVersion());
     }
 
     private static void registerGameTests(RegisterGameTestsEvent event) {
         event.register(CurrencyGameTests.class);
+        event.register(QuestCodecGameTests.class);
     }
 }

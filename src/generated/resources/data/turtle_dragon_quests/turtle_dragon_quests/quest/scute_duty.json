@@ -1,0 +1,27 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.scute_duty.desc"
+  },
+  "group": "tide",
+  "icon": "minecraft:turtle_scute",
+  "objectives": [
+    {
+      "type": "gather",
+      "count": 1,
+      "id": "scute",
+      "item": "minecraft:turtle_scute"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:drowned_watch"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 40
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.scute_duty.title"
+  }
+}

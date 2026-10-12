@@ -1,0 +1,31 @@
+{
+  "description": {
+    "translate": "quest.turtle_dragon_quests.after_the_fire.desc"
+  },
+  "group": "dragon",
+  "icon": "minecraft:elytra",
+  "objectives": [
+    {
+      "type": "gather",
+      "count": 1,
+      "id": "elytra",
+      "item": "minecraft:elytra"
+    }
+  ],
+  "prerequisites": [
+    "turtle_dragon_quests:the_dragon"
+  ],
+  "rewards": [
+    {
+      "type": "currency",
+      "tdg": 250
+    },
+    {
+      "type": "item",
+      "item": "minecraft:shulker_shell"
+    }
+  ],
+  "title": {
+    "translate": "quest.turtle_dragon_quests.after_the_fire.title"
+  }
+}
