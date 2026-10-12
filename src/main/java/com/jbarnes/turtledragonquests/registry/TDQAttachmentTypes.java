@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.jbarnes.turtledragonquests.TDQ;
 import com.jbarnes.turtledragonquests.currency.WalletAttachment;
+import com.jbarnes.turtledragonquests.quest.QuestProgressAttachment;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -19,6 +20,13 @@ public final class TDQAttachmentTypes {
                     .serialize(WalletAttachment.CODEC)
                     .copyOnDeath()
                     .build());
+
+    public static final Supplier<AttachmentType<QuestProgressAttachment>> QUEST_PROGRESS =
+            ATTACHMENTS.register("quest_progress", () ->
+                    AttachmentType.builder(QuestProgressAttachment::empty)
+                            .serialize(QuestProgressAttachment.CODEC)
+                            .copyOnDeath()
+                            .build());
 
     private TDQAttachmentTypes() {}
 

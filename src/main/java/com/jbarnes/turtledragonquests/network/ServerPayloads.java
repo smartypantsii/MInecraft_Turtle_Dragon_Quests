@@ -1,9 +1,12 @@
 package com.jbarnes.turtledragonquests.network;
 
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
+import com.jbarnes.turtledragonquests.network.c2s.AcceptQuestC2S;
+import com.jbarnes.turtledragonquests.network.c2s.ClaimRewardsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.DepositCoinsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.WithdrawCoinsC2S;
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
+import com.jbarnes.turtledragonquests.quest.QuestEngine;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,6 +37,30 @@ public final class ServerPayloads {
             TDQNetwork.sendToPlayer(player, new ActionResultS2C(ok, Component.translatable(
                     ok ? "commands.turtle_dragon_quests.deposit.success" : "commands.turtle_dragon_quests.deposit.fail",
                     deposited)));
+        });
+    }
+
+    public static void acceptQuest(AcceptQuestC2S payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (!(ctx.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            boolean ok = QuestEngine.tryAccept(player, payload.questId());
+            TDQNetwork.sendToPlayer(player, new ActionResultS2C(ok, Component.translatable(
+                    ok ? "commands.turtle_dragon_quests.quest.accept.success" : "commands.turtle_dragon_quests.quest.accept.fail",
+                    payload.questId().toString())));
+        });
+    }
+
+    public static void claim(ClaimRewardsC2S payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (!(ctx.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            boolean ok = QuestEngine.tryClaim(player, payload.questId());
+            TDQNetwork.sendToPlayer(player, new ActionResultS2C(ok, Component.translatable(
+                    ok ? "commands.turtle_dragon_quests.quest.claim.success" : "commands.turtle_dragon_quests.quest.claim.fail",
+                    payload.questId().toString())));
         });
     }
 }

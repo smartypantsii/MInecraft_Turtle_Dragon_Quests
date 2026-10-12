@@ -4,14 +4,17 @@ import com.jbarnes.turtledragonquests.command.TDQCommands;
 import com.jbarnes.turtledragonquests.datagen.TDQDatapackProvider;
 import com.jbarnes.turtledragonquests.event.DatapackSyncEvents;
 import com.jbarnes.turtledragonquests.event.PlayerPersistenceEvents;
+import com.jbarnes.turtledragonquests.event.QuestGameplayEvents;
 import com.jbarnes.turtledragonquests.gametest.CurrencyGameTests;
 import com.jbarnes.turtledragonquests.gametest.QuestCodecGameTests;
+import com.jbarnes.turtledragonquests.gametest.QuestEngineGameTests;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
 import com.jbarnes.turtledragonquests.registry.TDQAttachmentTypes;
 import com.jbarnes.turtledragonquests.registry.TDQCreativeTabs;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
 import com.jbarnes.turtledragonquests.registry.TDQItems;
 
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -37,6 +40,7 @@ public final class TurtleDragonQuests {
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onDimension);
         NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onDatapackSync);
         NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, QuestGameplayEvents::onLivingDeath);
 
         TDQ.LOGGER.info("Turtle Dragon Quests {} loading", modContainer.getModInfo().getVersion());
     }
@@ -44,5 +48,6 @@ public final class TurtleDragonQuests {
     private static void registerGameTests(RegisterGameTestsEvent event) {
         event.register(CurrencyGameTests.class);
         event.register(QuestCodecGameTests.class);
+        event.register(QuestEngineGameTests.class);
     }
 }

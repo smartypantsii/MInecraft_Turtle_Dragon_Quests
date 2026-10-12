@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items, the **TDG wallet**, and **quest definitions** are in. `/tdq balance`, `/tdq deposit`, `/tdq withdraw`, and op `/tdq currency *` work. The six-chapter campaign loads from datapacks (`/reload` logs the count). Accept/progress/claim and System Shop land later. Journal and catalog use is still a no-op.
+Items, the **TDG wallet**, **quest definitions**, and **quest progress** are in. Kill objectives increment and complete. Accept and claim work (packets and engine; no quest-log UI yet). `/tdq reload` and op `/tdq quest grant|complete|reset` work. Gather, submit, craft, visit, journal UI, and System Shop land later. Journal and catalog use is still a no-op.
 
 ## Requirements (when the skeleton exists)
 
@@ -85,8 +85,9 @@ The jar will be written to `build/libs/`. Local tools: `./gradlew runClient`, `r
 ## Manual checks (when playable)
 
 - `/tdq currency add @s 10` then `/tdq withdraw 10` gives TDG Coin items; `/tdq deposit` returns them to the wallet.
-- Logout, dimension change, death, and process restart keep the wallet.
+- Logout, dimension change, death, and process restart keep the wallet and quest progress.
 - Two LAN clients do not share a wallet.
+- `/tdq quest grant @s turtle_dragon_quests:night_watch` then kill three zombies completes the quest; claim pays TDG. A full inventory refuses claim and credits nothing.
 
 ## License
 

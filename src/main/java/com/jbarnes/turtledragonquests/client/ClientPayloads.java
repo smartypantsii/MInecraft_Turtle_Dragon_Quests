@@ -1,6 +1,8 @@
 package com.jbarnes.turtledragonquests.client;
 
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
+import com.jbarnes.turtledragonquests.network.s2c.QuestDeltaS2C;
+import com.jbarnes.turtledragonquests.network.s2c.QuestProgressSyncS2C;
 import com.jbarnes.turtledragonquests.network.s2c.WalletSyncS2C;
 
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +13,14 @@ public final class ClientPayloads {
 
     public static void wallet(WalletSyncS2C payload, IPayloadContext ctx) {
         ctx.enqueueWork(() -> ClientWallet.set(payload.tdg()));
+    }
+
+    public static void questSync(QuestProgressSyncS2C payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> ClientQuestData.replace(payload));
+    }
+
+    public static void questDelta(QuestDeltaS2C payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> ClientQuestData.patch(payload));
     }
 
     public static void actionResult(ActionResultS2C payload, IPayloadContext ctx) {

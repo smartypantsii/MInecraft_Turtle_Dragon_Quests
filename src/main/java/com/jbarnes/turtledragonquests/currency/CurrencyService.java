@@ -37,6 +37,18 @@ public final class CurrencyService {
         return true;
     }
 
+    public static boolean hasRoom(ServerPlayer player, long amount) {
+        if (amount < 0L) {
+            return false;
+        }
+        if (amount == 0L) {
+            return true;
+        }
+        long cap = TDQConfig.maxCoins();
+        long current = get(player);
+        return current <= cap && amount <= cap - current;
+    }
+
     public static void credit(ServerPlayer player, long amount) {
         if (amount <= 0) {
             return;
