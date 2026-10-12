@@ -54,14 +54,19 @@ neoForge {
     runs {
         client {
             client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
             server()
             programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         }
 
-        // gameTestServer is omitted until GameTests exist. The MDK run crashes with zero tests.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
         data {
             data()

@@ -2,5 +2,12 @@
   "itemGroup.turtle_dragon_quests.main": "Turtle Dragon Quests",
   "item.turtle_dragon_quests.quest_journal": "Quest Journal",
   "item.turtle_dragon_quests.shop_catalog": "System Shop Catalog",
-  "item.turtle_dragon_quests.tdg_coin": "TDG Coin"
+  "item.turtle_dragon_quests.tdg_coin": "TDG Coin",
+  "commands.turtle_dragon_quests.balance": "TDG: %s",
+  "commands.turtle_dragon_quests.deposit.success": "Deposited %s TDG",
+  "commands.turtle_dragon_quests.deposit.fail": "Nothing to deposit",
+  "commands.turtle_dragon_quests.withdraw.success": "Withdrew %s TDG",
+  "commands.turtle_dragon_quests.withdraw.fail": "Could not withdraw %s TDG",
+  "commands.turtle_dragon_quests.currency.get": "%s has %s TDG",
+  "commands.turtle_dragon_quests.currency.set": "Set %s to %s TDG"
 }

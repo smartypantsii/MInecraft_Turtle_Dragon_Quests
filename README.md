@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-NeoForge 1.21.1 skeleton plus items: Quest Journal, System Shop Catalog, and TDG Coin in the **Turtle Dragon Quests** creative tab. Use is still a no-op. Quest engine, wallet, and shop land in later PRs.
+Items and the **TDG wallet** are in. `/tdq balance`, `/tdq deposit`, `/tdq withdraw`, and op `/tdq currency *` work. Journal and catalog use is still a no-op. Quests and the System Shop land later.
 
 ## Requirements (when the skeleton exists)
 
@@ -80,11 +80,12 @@ Pack JSON uses `{ "item", "count" }` stacks. Tags are `"minecraft:logs"` with **
 ./gradlew build
 ```
 
-The jar will be written to `build/libs/`. Local tools: `./gradlew runClient`, `runServer`, `runData`. Do not treat an empty `runGameTestServer` as a gate.
+The jar will be written to `build/libs/`. Local tools: `./gradlew runClient`, `runServer`, `runData`, `runGameTestServer`.
 
 ## Manual checks (when playable)
 
-- Logout, dimension change, death, and process restart keep wallet and quest progress.
+- `/tdq currency add @s 10` then `/tdq withdraw 10` gives TDG Coin items; `/tdq deposit` returns them to the wallet.
+- Logout, dimension change, death, and process restart keep the wallet.
 - Two LAN clients do not share a wallet.
 
 ## License
