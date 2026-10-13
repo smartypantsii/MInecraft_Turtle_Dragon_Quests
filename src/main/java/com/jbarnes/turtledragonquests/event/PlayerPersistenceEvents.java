@@ -1,5 +1,6 @@
 package com.jbarnes.turtledragonquests.event;
 
+import com.jbarnes.turtledragonquests.currency.AchievementRewards;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.shop.ShopService;
@@ -13,6 +14,7 @@ public final class PlayerPersistenceEvents {
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             CurrencyService.grantStarterIfNeeded(player);
+            AchievementRewards.backfill(player);
             QuestEngine.recomputeGraph(player);
             QuestEngine.recomputeGather(player);
             QuestEngine.recomputeVisit(player);

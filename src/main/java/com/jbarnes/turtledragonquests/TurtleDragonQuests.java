@@ -2,9 +2,11 @@ package com.jbarnes.turtledragonquests;
 
 import com.jbarnes.turtledragonquests.command.TDQCommands;
 import com.jbarnes.turtledragonquests.datagen.TDQDatapackProvider;
+import com.jbarnes.turtledragonquests.event.AchievementEvents;
 import com.jbarnes.turtledragonquests.event.DatapackSyncEvents;
 import com.jbarnes.turtledragonquests.event.PlayerPersistenceEvents;
 import com.jbarnes.turtledragonquests.event.QuestGameplayEvents;
+import com.jbarnes.turtledragonquests.gametest.AchievementGameTests;
 import com.jbarnes.turtledragonquests.gametest.CurrencyGameTests;
 import com.jbarnes.turtledragonquests.gametest.QuestCodecGameTests;
 import com.jbarnes.turtledragonquests.gametest.QuestEngineGameTests;
@@ -38,6 +40,7 @@ public final class TurtleDragonQuests {
         modContainer.registerConfig(ModConfig.Type.COMMON, TDQConfig.SPEC);
 
         NeoForge.EVENT_BUS.addListener(TDQCommands::register);
+        NeoForge.EVENT_BUS.addListener(AchievementEvents::onEarn);
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onLogin);
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onClone);
         NeoForge.EVENT_BUS.addListener(PlayerPersistenceEvents::onDimension);
@@ -55,6 +58,7 @@ public final class TurtleDragonQuests {
 
     private static void registerGameTests(RegisterGameTestsEvent event) {
         event.register(CurrencyGameTests.class);
+        event.register(AchievementGameTests.class);
         event.register(QuestCodecGameTests.class);
         event.register(QuestEngineGameTests.class);
         event.register(ShopGameTests.class);

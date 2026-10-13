@@ -1,6 +1,7 @@
 package com.jbarnes.turtledragonquests.event;
 
 import com.jbarnes.turtledragonquests.TDQ;
+import com.jbarnes.turtledragonquests.currency.AchievementRewards;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
@@ -20,6 +21,7 @@ public final class DatapackSyncEvents {
             QuestEngine.recomputeGraph(joining);
             QuestEngine.recomputeGather(joining);
             QuestEngine.recomputeVisit(joining);
+            AchievementRewards.backfill(joining);
             QuestEngine.sync(joining);
             CurrencyService.sync(joining);
             ShopService.sync(joining);
@@ -28,19 +30,23 @@ public final class DatapackSyncEvents {
         MinecraftServer server = event.getPlayerList().getServer();
         logCounts(server);
         QuestEngine.afterReload(server);
+        AchievementRewards.backfillAll(server);
         ShopService.afterReload(server);
     }
 
     public static void onServerStarted(ServerStartedEvent event) {
         logCounts(event.getServer());
         QuestEngine.afterReload(event.getServer());
+        AchievementRewards.backfillAll(event.getServer());
         ShopService.afterReload(event.getServer());
     }
 
     private static void logCounts(MinecraftServer server) {
         int quests = server.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY).size();
         int offers = server.registryAccess().registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY).size();
+        int rewards = server.registryAccess().registryOrThrow(TDQDataRegistries.ACHIEVEMENT_REWARD_REGISTRY).size();
         TDQ.LOGGER.info("Loaded {} quest definitions", quests);
         TDQ.LOGGER.info("Loaded {} shop offers", offers);
+        TDQ.LOGGER.info("Loaded {} achievement rewards", rewards);
     }
 }

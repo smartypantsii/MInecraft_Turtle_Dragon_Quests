@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five objective types, the **quest log**, and the **System Shop** are in. Achievement TDG is still later.
+Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five objective types, the **quest log**, the **System Shop**, and **achievement TDG** are in.
 
 ## Requirements (when the skeleton exists)
 

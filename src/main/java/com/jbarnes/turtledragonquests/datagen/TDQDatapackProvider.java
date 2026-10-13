@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.jbarnes.turtledragonquests.TDQ;
+import com.jbarnes.turtledragonquests.currency.AchievementReward;
 import com.jbarnes.turtledragonquests.quest.CraftObjective;
 import com.jbarnes.turtledragonquests.quest.CurrencyReward;
 import com.jbarnes.turtledragonquests.quest.GatherObjective;
@@ -35,7 +36,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 public final class TDQDatapackProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(TDQDataRegistries.QUEST_REGISTRY, TDQDatapackProvider::bootstrapQuests)
-            .add(TDQDataRegistries.SHOP_OFFER_REGISTRY, TDQDatapackProvider::bootstrapShopOffers);
+            .add(TDQDataRegistries.SHOP_OFFER_REGISTRY, TDQDatapackProvider::bootstrapShopOffers)
+            .add(TDQDataRegistries.ACHIEVEMENT_REWARD_REGISTRY, TDQDatapackProvider::bootstrapAchievementRewards);
 
     private TDQDatapackProvider() {}
 
@@ -185,6 +187,13 @@ public final class TDQDatapackProvider {
                 Optional.empty()));
     }
 
+    static void bootstrapAchievementRewards(BootstrapContext<AchievementReward> ctx) {
+        // Pack makers add more files under turtle_dragon_quests/achievement_reward/.
+        ctx.register(
+                rewardKey("story_mine_stone"),
+                new AchievementReward(ResourceLocation.parse("minecraft:story/mine_stone"), 5L));
+    }
+
     private static void offer(
             BootstrapContext<ShopOffer> ctx,
             String id,
@@ -207,6 +216,10 @@ public final class TDQDatapackProvider {
 
     private static ResourceKey<ShopOffer> offerKey(String path) {
         return ResourceKey.create(TDQDataRegistries.SHOP_OFFER_REGISTRY, TDQ.id(path));
+    }
+
+    private static ResourceKey<AchievementReward> rewardKey(String path) {
+        return ResourceKey.create(TDQDataRegistries.ACHIEVEMENT_REWARD_REGISTRY, TDQ.id(path));
     }
 
     private static void quest(
