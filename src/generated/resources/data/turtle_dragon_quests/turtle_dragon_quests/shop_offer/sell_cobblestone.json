@@ -1,0 +1,11 @@
+{
+  "category": "building",
+  "count": 32,
+  "global_stock": 256,
+  "item": "minecraft:cobblestone",
+  "required_quests": [
+    "turtle_dragon_quests:wheat_tithe"
+  ],
+  "side": "sell",
+  "unit_price": 1
+}

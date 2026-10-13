@@ -1,0 +1,10 @@
+{
+  "category": "food",
+  "count": 8,
+  "item": "minecraft:cooked_salmon",
+  "required_quests": [
+    "turtle_dragon_quests:drowned_watch"
+  ],
+  "side": "buy",
+  "unit_price": 12
+}

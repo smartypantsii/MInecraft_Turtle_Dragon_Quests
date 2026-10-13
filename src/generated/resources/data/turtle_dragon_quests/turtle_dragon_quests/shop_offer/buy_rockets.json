@@ -1,0 +1,10 @@
+{
+  "category": "end",
+  "count": 16,
+  "item": "minecraft:firework_rocket",
+  "required_quests": [
+    "turtle_dragon_quests:the_dragon"
+  ],
+  "side": "buy",
+  "unit_price": 200
+}

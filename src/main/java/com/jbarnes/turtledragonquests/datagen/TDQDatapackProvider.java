@@ -18,6 +18,8 @@ import com.jbarnes.turtledragonquests.quest.SimpleStack;
 import com.jbarnes.turtledragonquests.quest.SubmitObjective;
 import com.jbarnes.turtledragonquests.quest.VisitObjective;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
+import com.jbarnes.turtledragonquests.shop.ShopOffer;
+import com.jbarnes.turtledragonquests.shop.ShopSide;
 
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.data.worldgen.BootstrapContext;
@@ -32,7 +34,8 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 public final class TDQDatapackProvider {
     public static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(TDQDataRegistries.QUEST_REGISTRY, TDQDatapackProvider::bootstrapQuests);
+            .add(TDQDataRegistries.QUEST_REGISTRY, TDQDatapackProvider::bootstrapQuests)
+            .add(TDQDataRegistries.SHOP_OFFER_REGISTRY, TDQDatapackProvider::bootstrapShopOffers);
 
     private TDQDatapackProvider() {}
 
@@ -142,6 +145,53 @@ public final class TDQDatapackProvider {
                         Optional.empty(),
                         Optional.empty())),
                 List.of()));
+    }
+
+    static void bootstrapShopOffers(BootstrapContext<ShopOffer> ctx) {
+        offer(ctx, "buy_steak", ShopSide.BUY, "cooked_beef", 8, 10L, Optional.empty(), "cobble_tithe", "food");
+        offer(ctx, "buy_torches", ShopSide.BUY, "torch", 16, 5L, Optional.empty(), "cobble_tithe", "supplies");
+
+        offer(ctx, "buy_iron_ingot", ShopSide.BUY, "iron_ingot", 1, 8L, Optional.empty(), "wheat_tithe", "metals");
+        offer(ctx, "sell_cobblestone", ShopSide.SELL, "cobblestone", 32, 1L, Optional.of(256), "wheat_tithe", "building");
+
+        offer(ctx, "buy_boat", ShopSide.BUY, "oak_boat", 1, 15L, Optional.empty(), "drowned_watch", "travel");
+        offer(ctx, "buy_cooked_salmon", ShopSide.BUY, "cooked_salmon", 8, 12L, Optional.empty(), "drowned_watch", "food");
+        // SimpleStack has no potion components; pufferfish grants water breathing when eaten.
+        offer(ctx, "buy_pufferfish", ShopSide.BUY, "pufferfish", 1, 40L, Optional.empty(), "drowned_watch", "potions");
+
+        offer(ctx, "buy_ender_pearl", ShopSide.BUY, "ender_pearl", 1, 80L, Optional.empty(), "diamond_glint", "end");
+        offer(ctx, "sell_diamonds", ShopSide.SELL, "diamond", 1, 50L, Optional.of(64), "diamond_glint", "ores");
+
+        // SimpleStack has no potion components; magma cream is the fire-resistance brewing ingredient.
+        offer(ctx, "buy_magma_cream", ShopSide.BUY, "magma_cream", 1, 60L, Optional.empty(), "brew_station", "potions");
+        offer(ctx, "buy_nether_wart", ShopSide.BUY, "nether_wart", 4, 25L, Optional.empty(), "brew_station", "nether");
+
+        offer(ctx, "buy_rockets", ShopSide.BUY, "firework_rocket", 16, 200L, Optional.empty(), "the_dragon", "end");
+        offer(ctx, "buy_chorus_fruit", ShopSide.BUY, "chorus_fruit", 16, 80L, Optional.empty(), "the_dragon", "end");
+    }
+
+    private static void offer(
+            BootstrapContext<ShopOffer> ctx,
+            String id,
+            ShopSide side,
+            String item,
+            int count,
+            long unitPrice,
+            Optional<Integer> globalStock,
+            String requiredQuest,
+            String category
+    ) {
+        ctx.register(offerKey(id), new ShopOffer(
+                side,
+                new SimpleStack(ResourceLocation.withDefaultNamespace(item), count),
+                unitPrice,
+                globalStock,
+                List.of(TDQ.id(requiredQuest)),
+                Optional.of(category)));
+    }
+
+    private static ResourceKey<ShopOffer> offerKey(String path) {
+        return ResourceKey.create(TDQDataRegistries.SHOP_OFFER_REGISTRY, TDQ.id(path));
     }
 
     private static void quest(

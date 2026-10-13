@@ -1,0 +1,10 @@
+{
+  "category": "supplies",
+  "count": 16,
+  "item": "minecraft:torch",
+  "required_quests": [
+    "turtle_dragon_quests:cobble_tithe"
+  ],
+  "side": "buy",
+  "unit_price": 5
+}

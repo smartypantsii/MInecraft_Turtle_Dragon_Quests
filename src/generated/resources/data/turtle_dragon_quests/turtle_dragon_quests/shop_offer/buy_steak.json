@@ -1,0 +1,10 @@
+{
+  "category": "food",
+  "count": 8,
+  "item": "minecraft:cooked_beef",
+  "required_quests": [
+    "turtle_dragon_quests:cobble_tithe"
+  ],
+  "side": "buy",
+  "unit_price": 10
+}

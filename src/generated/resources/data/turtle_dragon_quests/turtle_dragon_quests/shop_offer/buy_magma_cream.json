@@ -1,0 +1,9 @@
+{
+  "category": "potions",
+  "item": "minecraft:magma_cream",
+  "required_quests": [
+    "turtle_dragon_quests:brew_station"
+  ],
+  "side": "buy",
+  "unit_price": 60
+}

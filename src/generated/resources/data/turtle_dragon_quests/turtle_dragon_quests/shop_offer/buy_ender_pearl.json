@@ -1,0 +1,9 @@
+{
+  "category": "end",
+  "item": "minecraft:ender_pearl",
+  "required_quests": [
+    "turtle_dragon_quests:diamond_glint"
+  ],
+  "side": "buy",
+  "unit_price": 80
+}

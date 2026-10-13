@@ -1,0 +1,10 @@
+{
+  "category": "ores",
+  "global_stock": 64,
+  "item": "minecraft:diamond",
+  "required_quests": [
+    "turtle_dragon_quests:diamond_glint"
+  ],
+  "side": "sell",
+  "unit_price": 50
+}

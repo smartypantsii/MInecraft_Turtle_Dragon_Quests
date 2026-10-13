@@ -3,6 +3,7 @@ package com.jbarnes.turtledragonquests.command;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
+import com.jbarnes.turtledragonquests.shop.ShopService;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
@@ -25,6 +26,11 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 public final class TDQCommands {
     private static final SuggestionProvider<CommandSourceStack> QUEST_IDS = (ctx, builder) -> {
         var registry = ctx.getSource().getServer().registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY);
+        return SharedSuggestionProvider.suggestResource(registry.keySet(), builder);
+    };
+
+    private static final SuggestionProvider<CommandSourceStack> OFFER_IDS = (ctx, builder) -> {
+        var registry = ctx.getSource().getServer().registryAccess().registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY);
         return SharedSuggestionProvider.suggestResource(registry.keySet(), builder);
     };
 
@@ -59,6 +65,13 @@ public final class TDQCommands {
                                         .then(Commands.argument("id", ResourceLocationArgument.id())
                                                 .suggests(QUEST_IDS)
                                                 .executes(TDQCommands::questReset)))))
+                .then(Commands.literal("shop")
+                        .then(Commands.literal("stock")
+                                .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                                .then(Commands.argument("id", ResourceLocationArgument.id())
+                                        .suggests(OFFER_IDS)
+                                        .then(Commands.argument("n", IntegerArgumentType.integer(0))
+                                                .executes(TDQCommands::shopStock)))))
                 .then(Commands.literal("currency")
                         .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                         .then(Commands.literal("get")
@@ -198,6 +211,21 @@ public final class TDQCommands {
         QuestEngine.resetAll(target);
         ctx.getSource().sendSuccess(
                 () -> Component.translatable("commands.turtle_dragon_quests.quest.reset", target.getGameProfile().getName(), "all"),
+                true);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int shopStock(CommandContext<CommandSourceStack> ctx) {
+        ResourceLocation id = ResourceLocationArgument.getId(ctx, "id");
+        int n = IntegerArgumentType.getInteger(ctx, "n");
+        MinecraftServer server = ctx.getSource().getServer();
+        if (server.registryAccess().registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY).getOptional(id).isEmpty()) {
+            ctx.getSource().sendFailure(Component.translatable("commands.turtle_dragon_quests.shop.missing", id.toString()));
+            return 0;
+        }
+        ShopService.setStock(server, id, n);
+        ctx.getSource().sendSuccess(
+                () -> Component.translatable("commands.turtle_dragon_quests.shop.stock", id.toString(), n),
                 true);
         return Command.SINGLE_SUCCESS;
     }

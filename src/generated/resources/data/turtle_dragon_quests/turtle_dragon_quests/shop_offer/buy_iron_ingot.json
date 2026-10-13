@@ -1,0 +1,9 @@
+{
+  "category": "metals",
+  "item": "minecraft:iron_ingot",
+  "required_quests": [
+    "turtle_dragon_quests:wheat_tithe"
+  ],
+  "side": "buy",
+  "unit_price": 8
+}

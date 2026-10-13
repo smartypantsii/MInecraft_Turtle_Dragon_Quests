@@ -4,6 +4,7 @@ import com.jbarnes.turtledragonquests.TDQ;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
+import com.jbarnes.turtledragonquests.shop.ShopService;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,17 +25,21 @@ public final class DatapackSyncEvents {
             return;
         }
         MinecraftServer server = event.getPlayerList().getServer();
-        logQuestCount(server);
+        logCounts(server);
         QuestEngine.afterReload(server);
+        ShopService.afterReload(server);
     }
 
     public static void onServerStarted(ServerStartedEvent event) {
-        logQuestCount(event.getServer());
+        logCounts(event.getServer());
         QuestEngine.afterReload(event.getServer());
+        ShopService.afterReload(event.getServer());
     }
 
-    private static void logQuestCount(MinecraftServer server) {
-        int n = server.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY).size();
-        TDQ.LOGGER.info("Loaded {} quest definitions", n);
+    private static void logCounts(MinecraftServer server) {
+        int quests = server.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY).size();
+        int offers = server.registryAccess().registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY).size();
+        TDQ.LOGGER.info("Loaded {} quest definitions", quests);
+        TDQ.LOGGER.info("Loaded {} shop offers", offers);
     }
 }

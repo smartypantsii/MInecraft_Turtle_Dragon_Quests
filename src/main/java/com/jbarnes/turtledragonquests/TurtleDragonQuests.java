@@ -8,6 +8,7 @@ import com.jbarnes.turtledragonquests.event.QuestGameplayEvents;
 import com.jbarnes.turtledragonquests.gametest.CurrencyGameTests;
 import com.jbarnes.turtledragonquests.gametest.QuestCodecGameTests;
 import com.jbarnes.turtledragonquests.gametest.QuestEngineGameTests;
+import com.jbarnes.turtledragonquests.gametest.ShopGameTests;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
 import com.jbarnes.turtledragonquests.registry.TDQAttachmentTypes;
 import com.jbarnes.turtledragonquests.registry.TDQCreativeTabs;
@@ -54,5 +55,6 @@ public final class TurtleDragonQuests {
         event.register(CurrencyGameTests.class);
         event.register(QuestCodecGameTests.class);
         event.register(QuestEngineGameTests.class);
+        event.register(ShopGameTests.class);
     }
 }

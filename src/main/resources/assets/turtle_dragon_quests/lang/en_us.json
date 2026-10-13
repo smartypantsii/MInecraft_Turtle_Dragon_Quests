@@ -21,6 +21,8 @@
   "commands.turtle_dragon_quests.quest.grant": "Granted %s quest %s",
   "commands.turtle_dragon_quests.quest.complete": "Completed %s quest %s",
   "commands.turtle_dragon_quests.quest.reset": "Reset %s quest %s",
+  "commands.turtle_dragon_quests.shop.stock": "Set shop offer %s remaining to %s",
+  "commands.turtle_dragon_quests.shop.missing": "Unknown shop offer %s",
 
   "quest.turtle_dragon_quests.first_timber.title": "First Timber",
   "quest.turtle_dragon_quests.first_timber.desc": "Punch trees. Any log will do.",
