@@ -1,16 +1,16 @@
 # Turtle Dragon Quests
 
-A **NeoForge** mod for Minecraft **1.21.1**. Milestone 1 adds **system quests**, a **System Shop**, and **TDG Coin** as the shop currency.
+A **NeoForge** mod for Minecraft **1.21.1**, version **0.1.0**. Milestone 1 ships **system quests**, a **System Shop**, and **TDG Coin**.
 
 This is **not** a Fabric mod and **not** Minecraft 1.21.11. Do not copy loader, Gradle, or Java pins from other projects in this workspace.
 
-Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
+Design: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five objective types, the **quest log**, the **System Shop**, and **achievement TDG** are in.
+Playable 0.1.0 slice: six-chapter campaign, quest log, System Shop buy/sell, TDG wallet, and pay-once TDG from mapped vanilla advancements.
 
-## Requirements (when the skeleton exists)
+## Requirements
 
 | Piece | Pin |
 | --- | --- |
@@ -20,15 +20,15 @@ Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five o
 | Gradle | 9.2.1 (wrapper) |
 | Plugin | ModDevGradle `net.neoforged.moddev` 2.0.148 |
 
-## Planned player features
+## Player features
 
 - **System quests** (keybind `J`, `/tdq quests`, Quest Journal): a six-chapter campaign from first logs to the ender dragon. Claiming pays **TDG Coin** and may also grant **special rewards** (items, quest unlocks).
-- **System Shop** (keybind `K`, `/tdq shop`, System Shop Catalog): server-wide catalog. Every price is **TDG Coin**. Not villager trades.
-- **TDG Coin**: persistent wallet plus physical `tdg_coin` items (withdraw/deposit). Also earned from **mapped vanilla achievements** (paid once).
+- **System Shop** (keybind `K`, `/tdq shop`, System Shop Catalog): server-wide catalog. Every `unit_price` is **TDG Coin**. `unit_price` `0` is a free sample. Not villager trades.
+- **TDG Coin**: persistent wallet plus physical `tdg_coin` items (withdraw/deposit). Also earned from **mapped vanilla achievements** (paid once). Shipped mapping: `minecraft:story/mine_stone` → 5 TDG.
 
 Objectives in v1: gather (possess), kill, visit, craft, submit.
 
-## Planned commands
+## Commands
 
 Root: `/tdq` (alias `/turtledragon`).
 
@@ -44,7 +44,9 @@ Root: `/tdq` (alias `/turtledragon`).
 | `/tdq quest grant/complete/reset <player> …` | op 2 | Force quest state; `reset … all` wipes a player |
 | `/tdq shop stock <id> <n>` | op 2 | Set remaining shop units (`0` depletes) |
 
-## Datapacks (planned)
+Vanilla `/reload` and `/tdq reload` both refresh player UIs, recompute quest graphs, backfill achievement TDG, and close an open System Shop.
+
+## Datapacks
 
 Registry keys use a **doubled** path. That is correct; do not flatten it.
 
@@ -54,11 +56,20 @@ Registry keys use a **doubled** path. That is correct; do not flatten it.
 | `turtle_dragon_quests:shop_offer` | `data/<namespace>/turtle_dragon_quests/shop_offer/<path>.json` |
 | `turtle_dragon_quests:achievement_reward` | `data/<namespace>/turtle_dragon_quests/achievement_reward/<path>.json` |
 
-Built-in files live under `data/turtle_dragon_quests/turtle_dragon_quests/…`.
+Built-in files live under `src/generated/resources/data/turtle_dragon_quests/turtle_dragon_quests/…`.
 
-Pack JSON uses `{ "item", "count" }` stacks. Tags are `"minecraft:logs"` with **no** leading `#`. Quest currency rewards use `"tdg"`, not `"coins"`. Vanilla `/reload` and `/tdq reload` both refresh player UIs.
+Pack JSON uses `{ "item", "count" }` stacks. Tags are `"minecraft:logs"` with **no** leading `#`. Quest currency rewards use `"tdg"`, not `"coins"`.
 
-## Config (planned, common spec)
+Example achievement mapping (`achievement_reward/story_mine_stone.json`):
+
+```json
+{
+  "advancement": "minecraft:story/mine_stone",
+  "tdg": 5
+}
+```
+
+## Config (common spec)
 
 | Key | Default | Meaning |
 | --- | --- | --- |
@@ -80,14 +91,17 @@ Pack JSON uses `{ "item", "count" }` stacks. Tags are `"minecraft:logs"` with **
 ./gradlew build
 ```
 
-The jar will be written to `build/libs/`. Local tools: `./gradlew runClient`, `runServer`, `runData`, `runGameTestServer`.
+The jar is `build/libs/turtle_dragon_quests-0.1.0.jar`. Local tools: `./gradlew runClient`, `runServer`, `runData`, `runGameTestServer`.
 
-## Manual checks (when playable)
+## Manual checks
 
 - `/tdq currency add @s 10` then `/tdq withdraw 10` gives TDG Coin items; `/tdq deposit` returns them to the wallet.
 - Logout, dimension change, death, and process restart keep the wallet and quest progress.
 - Two LAN clients do not share a wallet.
 - `/tdq quest grant @s turtle_dragon_quests:night_watch` then kill three zombies completes the quest; claim pays TDG. A full inventory refuses claim and credits nothing.
+- Claim `cobble_tithe`, then `/tdq shop` (or keybind `K` / catalog) to buy steak for 10 TDG.
+- `/reload` keeps quest progress and closes an open System Shop.
+- Earn `minecraft:story/mine_stone` once for 5 TDG; revoke and re-earn does not pay again.
 
 ## License
 

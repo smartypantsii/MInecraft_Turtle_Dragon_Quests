@@ -1,5 +1,6 @@
 package com.jbarnes.turtledragonquests.command;
 
+import com.jbarnes.turtledragonquests.TDQ;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
@@ -168,6 +169,7 @@ public final class TDQCommands {
         MinecraftServer server = ctx.getSource().getServer();
         server.reloadResources(server.getPackRepository().getSelectedIds());
         ctx.getSource().sendSuccess(() -> Component.translatable("commands.turtle_dragon_quests.reload"), true);
+        TDQ.LOGGER.info("Datapack reload requested");
         return Command.SINGLE_SUCCESS;
     }
 

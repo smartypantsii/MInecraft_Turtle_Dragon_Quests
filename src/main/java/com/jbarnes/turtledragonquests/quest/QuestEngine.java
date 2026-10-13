@@ -63,6 +63,7 @@ public final class QuestEngine {
         recomputeGather(player);
         recomputeGraph(player);
         sync(player);
+        TDQ.LOGGER.debug("Quest accepted {} by {}", id, player.getGameProfile().getName());
         return true;
     }
 
@@ -87,6 +88,7 @@ public final class QuestEngine {
             }
         }
         if (!CurrencyService.hasRoom(player, tdg) || !canFit(player.getInventory(), items)) {
+            TDQ.LOGGER.info("Quest claim refused for {} on {} (wallet or inventory full)", player.getGameProfile().getName(), id);
             return false;
         }
         if (tdg > 0) {
@@ -107,6 +109,11 @@ public final class QuestEngine {
         }
         recomputeGraph(player);
         sync(player);
+        TDQ.LOGGER.debug(
+                "Quest claimed {} by {} balance {}",
+                id,
+                player.getGameProfile().getName(),
+                CurrencyService.get(player));
         return true;
     }
 
@@ -356,6 +363,7 @@ public final class QuestEngine {
                 progress.acceptedGameTime(),
                 player.level().getGameTime()));
         TDQNetwork.sendToPlayer(player, new QuestDeltaS2C(id, QuestStatus.COMPLETED.wire(), "", 0));
+        TDQ.LOGGER.debug("Quest completed {} by {}", id, player.getGameProfile().getName());
         return true;
     }
 

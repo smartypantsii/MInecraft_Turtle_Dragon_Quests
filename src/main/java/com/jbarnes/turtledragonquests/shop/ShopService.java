@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.jbarnes.turtledragonquests.TDQ;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
 import com.jbarnes.turtledragonquests.network.s2c.ShopStateSyncS2C;
@@ -94,6 +95,7 @@ public final class ShopService {
 
     public static void open(ServerPlayer player) {
         if (!canAct(player)) {
+            TDQ.LOGGER.info("Shop open refused for {}", player.getGameProfile().getName());
             TDQNetwork.sendToPlayer(player, new ActionResultS2C(
                     false, Component.translatable("screen.turtle_dragon_quests.shop.reject")));
             return;

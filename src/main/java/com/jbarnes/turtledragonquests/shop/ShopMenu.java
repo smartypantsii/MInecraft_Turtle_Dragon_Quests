@@ -137,6 +137,13 @@ public final class ShopMenu extends AbstractContainerMenu {
         }
         ShopService.syncAll(player.getServer());
         ok(player, "screen.turtle_dragon_quests.shop.ok.buy");
+        TDQ.LOGGER.debug(
+                "Shop buy {} by {} cost {} remaining {} balance {}",
+                offerId,
+                player.getGameProfile().getName(),
+                cost,
+                ShopService.remaining(player.getServer(), offerId),
+                CurrencyService.get(player));
         return true;
     }
 
@@ -168,6 +175,13 @@ public final class ShopMenu extends AbstractContainerMenu {
         }
         ShopService.syncAll(player.getServer());
         ok(player, "screen.turtle_dragon_quests.shop.ok.sell");
+        TDQ.LOGGER.debug(
+                "Shop sell {} by {} payout {} remaining {} balance {}",
+                offerId,
+                player.getGameProfile().getName(),
+                payout,
+                ShopService.remaining(player.getServer(), offerId),
+                CurrencyService.get(player));
         return true;
     }
 
@@ -197,6 +211,7 @@ public final class ShopMenu extends AbstractContainerMenu {
     }
 
     private static void fail(ServerPlayer player, String key) {
+        TDQ.LOGGER.info("Shop action failed for {}: {}", player.getGameProfile().getName(), key);
         TDQNetwork.sendToPlayer(player, new ActionResultS2C(false, Component.translatable(key)));
     }
 

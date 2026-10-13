@@ -84,15 +84,18 @@ public final class CurrencyService {
 
     public static boolean tryWithdraw(ServerPlayer player, int itemCount) {
         if (!canUseCoinItems(player)) {
+            TDQ.LOGGER.info("TDG withdraw refused for {} (spectator, dead, or coin items disabled)", player.getGameProfile().getName());
             return false;
         }
         if (itemCount < 1 || itemCount > 64) {
             return false;
         }
         if (freeCoinSpace(player.getInventory()) < itemCount) {
+            TDQ.LOGGER.info("TDG withdraw refused for {} (inventory full)", player.getGameProfile().getName());
             return false;
         }
         if (!tryDebit(player, itemCount)) {
+            TDQ.LOGGER.info("TDG withdraw refused for {} count {}", player.getGameProfile().getName(), itemCount);
             return false;
         }
         Item coin = TDQItems.TDG_COIN.get();
