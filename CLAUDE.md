@@ -7,7 +7,7 @@ Minecraft **NeoForge 1.21.1** mod. Full design: [`docs/DESIGN.md`](docs/DESIGN.m
 - Minecraft `1.21.1`, NeoForge `21.1.259` (compile), toml range **`[21.1.250,21.2)`**
 - Java **21**, Gradle **9.2.1**, ModDevGradle **`net.neoforged.moddev` 2.0.148**
 - Parchment MC `1.21.1` / mappings `2024.11.17`
-- Mod version `0.1.0`, network protocol `"1"`
+- Mod version `0.1.1`, network protocol `"1"`
 - License: **LGPL-3.0-only** (`mod_license` / toml `license`)
 - Display name: **Turtle Dragon Quests**
 - Currency: **TDG Coin** (`turtle_dragon_quests:tdg_coin`). System Shop prices are TDG only.

@@ -57,11 +57,6 @@ public final class QuestLogScreen extends Screen {
         int listWidth = Math.max(160, this.width / 3);
         int listTop = 28;
         int listHeight = this.height - 40;
-        this.list = new QuestPickList(this.minecraft, listWidth, listHeight, listTop, 18);
-        this.list.setX(8);
-        this.addRenderableWidget(this.list);
-        this.list.populate();
-
         this.detailLeft = 16 + listWidth;
         int buttonY = this.height - 26;
         int buttonW = 72;
@@ -80,6 +75,10 @@ public final class QuestLogScreen extends Screen {
                 b -> sendSubmit())
                 .bounds(this.detailLeft + (buttonW + 6) * 2, buttonY, buttonW, 20)
                 .build());
+        this.list = new QuestPickList(this.minecraft, listWidth, listHeight, listTop, 18);
+        this.list.setX(8);
+        this.addRenderableWidget(this.list);
+        this.list.populate();
         updateButtons();
     }
 
@@ -163,6 +162,9 @@ public final class QuestLogScreen extends Screen {
     }
 
     private void updateButtons() {
+        if (this.accept == null || this.claim == null || this.submit == null) {
+            return;
+        }
         Optional<QuestDefinition> def = selectedDefinition();
         QuestStatus status = this.selectedId == null ? QuestStatus.LOCKED : ClientQuestData.status(this.selectedId);
         this.accept.visible = def.isPresent() && status == QuestStatus.AVAILABLE;

@@ -1,6 +1,6 @@
 # Turtle Dragon Quests
 
-A **NeoForge** mod for Minecraft **1.21.1**, version **0.1.0**. Milestone 1 ships **system quests**, a **System Shop**, and **TDG Coin**.
+A **NeoForge** mod for Minecraft **1.21.1**, version **0.1.1**. Milestone 1 ships **system quests**, a **System Shop**, and **TDG Coin**.
 
 This is **not** a Fabric mod and **not** Minecraft 1.21.11. Do not copy loader, Gradle, or Java pins from other projects in this workspace.
 
@@ -8,7 +8,7 @@ Design: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Playable 0.1.0 slice: six-chapter campaign, quest log, System Shop buy/sell, TDG wallet, and pay-once TDG from mapped vanilla advancements.
+Playable 0.1.1 slice: six-chapter campaign, quest log, System Shop buy/sell, TDG wallet, and pay-once TDG from mapped vanilla advancements.
 
 ## Requirements
 
@@ -91,7 +91,7 @@ Example achievement mapping (`achievement_reward/story_mine_stone.json`):
 ./gradlew build
 ```
 
-The jar is `build/libs/turtle_dragon_quests-0.1.0.jar`. Local tools: `./gradlew runClient`, `runServer`, `runData`, `runGameTestServer`.
+The jar is `build/libs/turtle_dragon_quests-0.1.1.jar`. Local tools: `./gradlew runClient`, `runServer`, `runData`, `runGameTestServer`.
 
 ## Manual checks
 

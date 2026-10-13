@@ -95,7 +95,7 @@ Verified against the official `NeoForgeMDKs/MDK-1.21.1-ModDevGradle` template an
 | Parchment | MC `1.21.1` / mappings `2024.11.17` | Official names + parameter names |
 | Loader range | `[1,)` | FML major |
 | NeoForge toml range | `[21.1.250,21.2)` | Must **not** be `[21.1.250,)` — that would match 21.2+/26.x if the Minecraft pin were loosened |
-| Mod version | `0.1.0` | Semver; milestone 1 is `0.1.x` |
+| Mod version | `0.1.1` | Semver; milestone 1 is `0.1.x` |
 | Network protocol | `"1"` | Extra fields added with `ByteBufCodecs.optional` / trailing-optional record codecs so `"1"` can grow without an immediate bump. Breaking field-order changes bump to `"2"`. |
 
 **Do not use** 26.x NeoForge APIs (`SavedDataType` codec constructors from the 26.1 docs, Java 25 toolchain, `Identifier` instead of `ResourceLocation` in places that still use the latter). 1.21.1 `SavedData` is NBT `Factory` + `computeIfAbsent` on `DimensionDataStorage`.
