@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items, the **TDG wallet**, **quest definitions**, and **quest progress** are in. Kill objectives increment and complete. Accept and claim work (packets and engine; no quest-log UI yet). `/tdq reload` and op `/tdq quest grant|complete|reset` work. Gather, submit, craft, visit, journal UI, and System Shop land later. Journal and catalog use is still a no-op.
+Items, the **TDG wallet**, **quest definitions**, **quest progress**, and all five objective types are in. The **quest log** opens from keybind `J`, `/tdq quests`, or the Quest Journal after a server sync. Achievement TDG and the System Shop land later. Catalog use is still a no-op.
 
 ## Requirements (when the skeleton exists)
 

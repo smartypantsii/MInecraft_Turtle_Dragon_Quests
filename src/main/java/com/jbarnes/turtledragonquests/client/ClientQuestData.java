@@ -6,6 +6,7 @@ import java.util.Map;
 import com.jbarnes.turtledragonquests.network.s2c.QuestDeltaS2C;
 import com.jbarnes.turtledragonquests.network.s2c.QuestProgressEntry;
 import com.jbarnes.turtledragonquests.network.s2c.QuestProgressSyncS2C;
+import com.jbarnes.turtledragonquests.quest.QuestStatus;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,5 +32,18 @@ public final class ClientQuestData {
 
     public static Map<ResourceLocation, QuestProgressEntry> snapshot() {
         return quests;
+    }
+
+    public static QuestStatus status(ResourceLocation id) {
+        QuestProgressEntry entry = quests.get(id);
+        return entry == null ? QuestStatus.LOCKED : QuestStatus.fromWire(entry.status());
+    }
+
+    public static int count(ResourceLocation id, String objectiveId) {
+        QuestProgressEntry entry = quests.get(id);
+        if (entry == null) {
+            return 0;
+        }
+        return entry.counts().getOrDefault(objectiveId, 0);
     }
 }

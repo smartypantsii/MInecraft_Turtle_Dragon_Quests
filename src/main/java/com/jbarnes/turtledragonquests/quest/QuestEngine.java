@@ -15,6 +15,7 @@ import com.jbarnes.turtledragonquests.TDQ;
 import com.jbarnes.turtledragonquests.TDQConfig;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
+import com.jbarnes.turtledragonquests.network.s2c.OpenQuestLogS2C;
 import com.jbarnes.turtledragonquests.network.s2c.QuestDeltaS2C;
 import com.jbarnes.turtledragonquests.network.s2c.QuestProgressEntry;
 import com.jbarnes.turtledragonquests.network.s2c.QuestProgressSyncS2C;
@@ -403,6 +404,15 @@ public final class QuestEngine {
             sync(player);
             CurrencyService.sync(player);
         }
+    }
+
+    public static void openLog(ServerPlayer player) {
+        recomputeGraph(player);
+        recomputeGather(player);
+        recomputeVisit(player);
+        CurrencyService.sync(player);
+        sync(player);
+        TDQNetwork.sendToPlayer(player, OpenQuestLogS2C.INSTANCE);
     }
 
     public static void sync(ServerPlayer player) {

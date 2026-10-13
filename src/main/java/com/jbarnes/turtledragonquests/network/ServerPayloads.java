@@ -4,6 +4,7 @@ import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.network.c2s.AcceptQuestC2S;
 import com.jbarnes.turtledragonquests.network.c2s.ClaimRewardsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.DepositCoinsC2S;
+import com.jbarnes.turtledragonquests.network.c2s.OpenQuestLogC2S;
 import com.jbarnes.turtledragonquests.network.c2s.SubmitItemsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.WithdrawCoinsC2S;
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
@@ -38,6 +39,14 @@ public final class ServerPayloads {
             TDQNetwork.sendToPlayer(player, new ActionResultS2C(ok, Component.translatable(
                     ok ? "commands.turtle_dragon_quests.deposit.success" : "commands.turtle_dragon_quests.deposit.fail",
                     deposited)));
+        });
+    }
+
+    public static void openQuestLog(OpenQuestLogC2S payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.player() instanceof ServerPlayer player) {
+                QuestEngine.openLog(player);
+            }
         });
     }
 

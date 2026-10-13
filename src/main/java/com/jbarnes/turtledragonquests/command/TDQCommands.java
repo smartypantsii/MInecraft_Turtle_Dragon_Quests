@@ -32,6 +32,7 @@ public final class TDQCommands {
 
     public static void register(RegisterCommandsEvent event) {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("tdq")
+                .then(Commands.literal("quests").executes(TDQCommands::quests))
                 .then(Commands.literal("balance").executes(TDQCommands::balance))
                 .then(Commands.literal("deposit").executes(TDQCommands::deposit))
                 .then(Commands.literal("withdraw")
@@ -75,6 +76,12 @@ public final class TDQCommands {
         var dispatcher = event.getDispatcher();
         var node = dispatcher.register(root);
         dispatcher.register(Commands.literal("turtledragon").redirect(node));
+    }
+
+    private static int quests(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        QuestEngine.openLog(player);
+        return Command.SINGLE_SUCCESS;
     }
 
     private static int balance(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
