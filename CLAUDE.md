@@ -4,7 +4,7 @@ Minecraft **NeoForge 1.21.1** mod. Full design: [`docs/DESIGN.md`](docs/DESIGN.m
 
 ## Loader and pins
 
-- Minecraft `1.21.1`, NeoForge `21.1.259`, toml range **`[21.1.259,21.2)`**
+- Minecraft `1.21.1`, NeoForge `21.1.259` (compile), toml range **`[21.1.250,21.2)`**
 - Java **21**, Gradle **9.2.1**, ModDevGradle **`net.neoforged.moddev` 2.0.148**
 - Parchment MC `1.21.1` / mappings `2024.11.17`
 - Mod version `0.1.0`, network protocol `"1"`
@@ -16,7 +16,7 @@ Minecraft **NeoForge 1.21.1** mod. Full design: [`docs/DESIGN.md`](docs/DESIGN.m
 
 **Never use** NeoForge 26.x APIs (`SavedDataType` codec constructors, Java 25 toolchain). 1.21.1 `SavedData` is NBT `Factory` + `computeIfAbsent` on overworld `DimensionDataStorage`.
 
-Do not jump NeoForge to 21.2+. Prefer `[21.1.259,21.2)` over `[21.1.259,)`.
+Do not jump NeoForge to 21.2+. Prefer `[21.1.250,21.2)` over `[21.1.250,)`.
 
 ## Ids
 

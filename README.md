@@ -15,7 +15,7 @@ Playable 0.1.0 slice: six-chapter campaign, quest log, System Shop buy/sell, TDG
 | Piece | Pin |
 | --- | --- |
 | Minecraft | 1.21.1 |
-| NeoForge | 21.1.259 (toml range `[21.1.259,21.2)`) |
+| NeoForge | 21.1.259 (toml range `[21.1.250,21.2)`) |
 | Java | 21 |
 | Gradle | 9.2.1 (wrapper) |
 | Plugin | ModDevGradle `net.neoforged.moddev` 2.0.148 |

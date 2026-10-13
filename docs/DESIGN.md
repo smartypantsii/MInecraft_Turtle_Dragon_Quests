@@ -88,13 +88,13 @@ Verified against the official `NeoForgeMDKs/MDK-1.21.1-ModDevGradle` template an
 | Property | Pin | Notes |
 | --- | --- | --- |
 | Minecraft | `1.21.1` | `minecraft_version_range=[1.21.1]` |
-| NeoForge | `21.1.259` | Official MDK `neo_version`. Bump 21.1.x patch freely; do not jump to 21.2+ / 26.x. |
+| NeoForge | `21.1.259` | Compile pin (MDK). Runtime toml accepts `21.1.250+`. Bump 21.1.x patch freely; do not jump to 21.2+ / 26.x. |
 | Java | **21** | Mojang ships Java 21 for 1.21.1. Do **not** use Java 25 from bigger-chickens. |
 | Gradle | `9.2.1` | MDK wrapper (`gradle-9.2.1-bin.zip`) |
 | Plugin | `net.neoforged.moddev` **2.0.148** | **ModDevGradle**, not NeoGradle, not Fabric Loom |
 | Parchment | MC `1.21.1` / mappings `2024.11.17` | Official names + parameter names |
 | Loader range | `[1,)` | FML major |
-| NeoForge toml range | `[21.1.259,21.2)` | Must **not** be `[21.1.259,)` — that would match 21.2+/26.x if the Minecraft pin were loosened |
+| NeoForge toml range | `[21.1.250,21.2)` | Must **not** be `[21.1.250,)` — that would match 21.2+/26.x if the Minecraft pin were loosened |
 | Mod version | `0.1.0` | Semver; milestone 1 is `0.1.x` |
 | Network protocol | `"1"` | Extra fields added with `ByteBufCodecs.optional` / trailing-optional record codecs so `"1"` can grow without an immediate bump. Breaking field-order changes bump to `"2"`. |
 
@@ -238,7 +238,7 @@ public final class TDQ {
 }
 ```
 
-`neoforge.mods.toml` is generated from `src/main/templates` via ModDevGradle `generateModMetadata`. `modLoader=javafml`, `neoforge` versionRange `[21.1.259,21.2)`, `minecraft` `[1.21.1]`.
+`neoforge.mods.toml` is generated from `src/main/templates` via ModDevGradle `generateModMetadata`. `modLoader=javafml`, `neoforge` versionRange `[21.1.250,21.2)`, `minecraft` `[1.21.1]`.
 
 No mixins config in v1.
 
@@ -1439,7 +1439,7 @@ After approval, **PR 1** adds bootstrap only.
 
 ### `README.md`
 
-- Pitch, Java 21 / MC 1.21.1 / NeoForge 21.1.x (`[21.1.259,21.2)`).
+- Pitch, Java 21 / MC 1.21.1 / NeoForge 21.1.x (`[21.1.250,21.2)`).
 - Install, `./gradlew build` (primary), local `runClient` / `runServer` / `runData`.
 - Commands, datapack paths (**doubled namespace** explained), config keys, JSON field tables or a pointer to examples.
 - Ops: `/tdq quest reset <p> all`, `/tdq currency set`, delete `turtle_dragon_quests_shop.dat`.
@@ -1506,7 +1506,7 @@ Earlier questions (UI form, currency type, stock default, manual claim, prereq o
 
 ## Key Decisions
 
-1. **NeoForge 1.21.1 + ModDevGradle + Java 21**, NeoForge `21.1.259`, toml range **`[21.1.259,21.2)`**. Not Fabric, not 26.x, not bigger-chickens pins.
+1. **NeoForge 1.21.1 + ModDevGradle + Java 21**, compile NeoForge `21.1.259`, toml range **`[21.1.250,21.2)`**. Not Fabric, not 26.x, not bigger-chickens pins.
 2. **Mod id `turtle_dragon_quests`**, package `com.jbarnes.turtledragonquests`.
 3. **Quests, shop offers, and achievement TDG grants are synced datapack registries.** Quests are not vanilla advancements. Achievement *rewards* bind vanilla advancement ids to TDG.
 4. **Pack JSON uses `SimpleStack` `{item, count}` and `ItemIngredient` (`item` XOR `tag`)**. Tag ids have **no leading `#`** (`TagKey.codec`, not `hashedCodec`). Visit `box` is `{min,max}` `BlockPos`es, **not** vanilla `BlockBox.CODEC`. Not vanilla `ItemStack.CODEC` (`id`/`components`). Dispatch via `Codec.dispatch` + `MapCodec`.
