@@ -17,6 +17,8 @@ public final class DatapackSyncEvents {
         ServerPlayer joining = event.getPlayer();
         if (joining != null) {
             QuestEngine.recomputeGraph(joining);
+            QuestEngine.recomputeGather(joining);
+            QuestEngine.recomputeVisit(joining);
             QuestEngine.sync(joining);
             CurrencyService.sync(joining);
             return;

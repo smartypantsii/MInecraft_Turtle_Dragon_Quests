@@ -41,6 +41,11 @@ public final class TurtleDragonQuests {
         NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onDatapackSync);
         NeoForge.EVENT_BUS.addListener(DatapackSyncEvents::onServerStarted);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, QuestGameplayEvents::onLivingDeath);
+        NeoForge.EVENT_BUS.addListener(QuestGameplayEvents::onPickup);
+        NeoForge.EVENT_BUS.addListener(QuestGameplayEvents::onDestroyItem);
+        NeoForge.EVENT_BUS.addListener(QuestGameplayEvents::onContainerClose);
+        NeoForge.EVENT_BUS.addListener(QuestGameplayEvents::onCraft);
+        NeoForge.EVENT_BUS.addListener(QuestGameplayEvents::onTick);
 
         TDQ.LOGGER.info("Turtle Dragon Quests {} loading", modContainer.getModInfo().getVersion());
     }

@@ -11,6 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public record ItemIngredient(Optional<ResourceLocation> item, Optional<TagKey<Item>> tag) {
     public static final MapCodec<ItemIngredient> MAP_CODEC = RecordCodecBuilder.<ItemIngredient>mapCodec(i -> i.group(
@@ -26,6 +27,16 @@ public record ItemIngredient(Optional<ResourceLocation> item, Optional<TagKey<It
 
     public static ItemIngredient ofTag(TagKey<Item> tag) {
         return new ItemIngredient(Optional.empty(), Optional.of(tag));
+    }
+
+    public boolean matches(ItemStack stack) {
+        if (stack.isEmpty()) {
+            return false;
+        }
+        if (item.isPresent()) {
+            return stack.getItemHolder().is(item.get());
+        }
+        return tag.isPresent() && stack.is(tag.get());
     }
 
     private static DataResult<ItemIngredient> validateXor(ItemIngredient ing) {

@@ -13,6 +13,8 @@ public final class PlayerPersistenceEvents {
         if (event.getEntity() instanceof ServerPlayer player) {
             CurrencyService.grantStarterIfNeeded(player);
             QuestEngine.recomputeGraph(player);
+            QuestEngine.recomputeGather(player);
+            QuestEngine.recomputeVisit(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
         }
@@ -20,6 +22,8 @@ public final class PlayerPersistenceEvents {
 
     public static void onClone(PlayerEvent.Clone event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            QuestEngine.recomputeGather(player);
+            QuestEngine.recomputeVisit(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
         }
@@ -27,6 +31,8 @@ public final class PlayerPersistenceEvents {
 
     public static void onDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            QuestEngine.recomputeVisit(player);
+            QuestEngine.recomputeGather(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
         }

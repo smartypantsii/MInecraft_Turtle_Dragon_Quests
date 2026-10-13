@@ -9,8 +9,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.jbarnes.turtledragonquests.TDQ;
+import com.jbarnes.turtledragonquests.TDQConfig;
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.network.TDQNetwork;
 import com.jbarnes.turtledragonquests.network.s2c.QuestDeltaS2C;
@@ -19,6 +21,7 @@ import com.jbarnes.turtledragonquests.network.s2c.QuestProgressSyncS2C;
 import com.jbarnes.turtledragonquests.registry.TDQAttachmentTypes;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -56,6 +59,7 @@ public final class QuestEngine {
             return false;
         }
         activate(player, id, def.get());
+        recomputeGather(player);
         recomputeGraph(player);
         sync(player);
         return true;
@@ -65,6 +69,7 @@ public final class QuestEngine {
         if (!canAct(player)) {
             return false;
         }
+        recomputeGather(player);
         Optional<QuestDefinition> defOpt = definition(player, id);
         if (defOpt.isEmpty() || status(player, id) != QuestStatus.COMPLETED) {
             return false;
@@ -110,6 +115,7 @@ public final class QuestEngine {
             return false;
         }
         activate(player, id, def.get());
+        recomputeGather(player);
         recomputeGraph(player);
         sync(player);
         return true;
@@ -134,12 +140,14 @@ public final class QuestEngine {
     public static void reset(ServerPlayer player, ResourceLocation id) {
         player.setData(TDQAttachmentTypes.QUEST_PROGRESS, attachment(player).without(id));
         recomputeGraph(player);
+        recomputeGather(player);
         sync(player);
     }
 
     public static void resetAll(ServerPlayer player) {
         player.setData(TDQAttachmentTypes.QUEST_PROGRESS, QuestProgressAttachment.empty());
         recomputeGraph(player);
+        recomputeGather(player);
         sync(player);
     }
 
@@ -172,6 +180,161 @@ public final class QuestEngine {
         }
         if (changed) {
             sync(player);
+        }
+    }
+
+    public static void onCraft(ServerPlayer player, ItemStack crafted) {
+        if (crafted.isEmpty()) {
+            return;
+        }
+        Registry<QuestDefinition> registry = player.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY);
+        boolean changed = false;
+        for (var entry : registry.entrySet()) {
+            ResourceLocation id = entry.getKey().location();
+            QuestProgress progress = attachment(player).get(id);
+            if (progress.status() != QuestStatus.ACTIVE) {
+                continue;
+            }
+            for (Objective objective : entry.getValue().objectives()) {
+                if (!(objective instanceof CraftObjective craft) || !craft.output().matches(crafted)) {
+                    continue;
+                }
+                int current = progress.objectiveCounts().getOrDefault(craft.id(), 0);
+                int next = (int) Math.min(craft.count(), (long) current + crafted.getCount());
+                if (next == current) {
+                    continue;
+                }
+                progress = progress.withCount(craft.id(), next);
+                put(player, id, progress);
+                TDQNetwork.sendToPlayer(player, new QuestDeltaS2C(id, progress.status().wire(), craft.id(), next));
+                changed = true;
+            }
+            if (tryComplete(player, id)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            sync(player);
+        }
+    }
+
+    public static boolean trySubmit(ServerPlayer player, ResourceLocation id, String objectiveId) {
+        if (!canAct(player)) {
+            return false;
+        }
+        Optional<QuestDefinition> def = definition(player, id);
+        QuestProgress progress = attachment(player).get(id);
+        if (def.isEmpty() || progress.status() != QuestStatus.ACTIVE) {
+            return false;
+        }
+        SubmitObjective submit = null;
+        for (Objective objective : def.get().objectives()) {
+            if (objective instanceof SubmitObjective candidate && candidate.id().equals(objectiveId)) {
+                submit = candidate;
+                break;
+            }
+        }
+        if (submit == null) {
+            return false;
+        }
+        int current = progress.objectiveCounts().getOrDefault(submit.id(), 0);
+        int remaining = submit.count() - current;
+        if (remaining <= 0) {
+            return false;
+        }
+        int taken = extractMatching(player.getInventory(), submit.items(), remaining);
+        if (taken <= 0) {
+            return false;
+        }
+        int next = current + taken;
+        progress = progress.withCount(submit.id(), next);
+        put(player, id, progress);
+        TDQNetwork.sendToPlayer(player, new QuestDeltaS2C(id, progress.status().wire(), submit.id(), next));
+        tryComplete(player, id);
+        recomputeGather(player);
+        sync(player);
+        return true;
+    }
+
+    public static void recomputeGather(ServerPlayer player) {
+        Registry<QuestDefinition> registry = player.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY);
+        boolean changed = false;
+        for (var entry : registry.entrySet()) {
+            ResourceLocation id = entry.getKey().location();
+            QuestProgress progress = attachment(player).get(id);
+            if (progress.status() != QuestStatus.ACTIVE) {
+                continue;
+            }
+            boolean anyGather = false;
+            for (Objective objective : entry.getValue().objectives()) {
+                if (!(objective instanceof GatherObjective gather)) {
+                    continue;
+                }
+                anyGather = true;
+                int owned = countMatching(player.getInventory(), gather.items());
+                int next = Math.min(gather.count(), owned);
+                int current = progress.objectiveCounts().getOrDefault(gather.id(), 0);
+                if (next == current) {
+                    continue;
+                }
+                progress = progress.withCount(gather.id(), next);
+                put(player, id, progress);
+                TDQNetwork.sendToPlayer(player, new QuestDeltaS2C(id, progress.status().wire(), gather.id(), next));
+                changed = true;
+            }
+            if (anyGather && tryComplete(player, id)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            sync(player);
+        }
+    }
+
+    public static void recomputeVisit(ServerPlayer player) {
+        Registry<QuestDefinition> registry = player.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY);
+        boolean changed = false;
+        for (var entry : registry.entrySet()) {
+            ResourceLocation id = entry.getKey().location();
+            QuestProgress progress = attachment(player).get(id);
+            if (progress.status() != QuestStatus.ACTIVE) {
+                continue;
+            }
+            for (Objective objective : entry.getValue().objectives()) {
+                if (!(objective instanceof VisitObjective visit)) {
+                    continue;
+                }
+                int current = progress.objectiveCounts().getOrDefault(visit.id(), 0);
+                if (current >= 1) {
+                    continue;
+                }
+                if (!matchesVisit(player, visit)) {
+                    continue;
+                }
+                progress = progress.withCount(visit.id(), 1);
+                put(player, id, progress);
+                TDQNetwork.sendToPlayer(player, new QuestDeltaS2C(id, progress.status().wire(), visit.id(), 1));
+                changed = true;
+            }
+            if (tryComplete(player, id)) {
+                changed = true;
+            }
+        }
+        if (changed) {
+            sync(player);
+        }
+    }
+
+    public static void tick(ServerPlayer player) {
+        int interval = TDQConfig.visitCheckIntervalTicks();
+        if (interval <= 0 || player.tickCount % interval != 0) {
+            return;
+        }
+        if (hasActive(player, objective -> objective instanceof GatherObjective)) {
+            recomputeGather(player);
+        }
+        if (hasActive(player, objective -> objective instanceof VisitObjective)) {
+            recomputeVisit(player);
         }
     }
 
@@ -235,6 +398,8 @@ public final class QuestEngine {
         }
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             recomputeGraph(player);
+            recomputeGather(player);
+            recomputeVisit(player);
             sync(player);
             CurrencyService.sync(player);
         }
@@ -335,6 +500,79 @@ public final class QuestEngine {
             }
         }
         return cyclic;
+    }
+
+    private static boolean hasActive(ServerPlayer player, Predicate<Objective> predicate) {
+        Registry<QuestDefinition> registry = player.registryAccess().registryOrThrow(TDQDataRegistries.QUEST_REGISTRY);
+        for (var entry : registry.entrySet()) {
+            if (attachment(player).get(entry.getKey().location()).status() != QuestStatus.ACTIVE) {
+                continue;
+            }
+            for (Objective objective : entry.getValue().objectives()) {
+                if (predicate.test(objective)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean matchesVisit(ServerPlayer player, VisitObjective visit) {
+        if (visit.dimension().isPresent() && !player.level().dimension().equals(visit.dimension().get())) {
+            return false;
+        }
+        if (visit.biome().isPresent() && !player.level().getBiome(player.blockPosition()).is(visit.biome().get())) {
+            return false;
+        }
+        if (visit.box().isPresent() && !visit.box().get().isInside(player.blockPosition())) {
+            return false;
+        }
+        if (visit.center().isPresent() && visit.radius().isPresent()) {
+            BlockPos center = visit.center().get();
+            long radius = visit.radius().get();
+            if (player.blockPosition().distSqr(center) > radius * radius) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static int countMatching(Inventory inventory, ItemIngredient ingredient) {
+        return countList(inventory.items, ingredient) + countList(inventory.offhand, ingredient);
+    }
+
+    private static int countList(List<ItemStack> slots, ItemIngredient ingredient) {
+        int n = 0;
+        for (ItemStack stack : slots) {
+            if (ingredient.matches(stack)) {
+                n += stack.getCount();
+            }
+        }
+        return n;
+    }
+
+    private static int extractMatching(Inventory inventory, ItemIngredient ingredient, int max) {
+        int taken = extractList(inventory.items, ingredient, max);
+        if (taken < max) {
+            taken += extractList(inventory.offhand, ingredient, max - taken);
+        }
+        return taken;
+    }
+
+    private static int extractList(List<ItemStack> slots, ItemIngredient ingredient, int max) {
+        int taken = 0;
+        for (ItemStack stack : slots) {
+            if (taken >= max) {
+                break;
+            }
+            if (!ingredient.matches(stack)) {
+                continue;
+            }
+            int n = Math.min(stack.getCount(), max - taken);
+            stack.shrink(n);
+            taken += n;
+        }
+        return taken;
     }
 
     private static boolean matches(KillObjective kill, EntityType<?> type) {

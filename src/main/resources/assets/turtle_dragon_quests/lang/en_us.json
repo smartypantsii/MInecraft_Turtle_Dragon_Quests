@@ -15,6 +15,8 @@
   "commands.turtle_dragon_quests.quest.accept.fail": "Could not accept quest %s",
   "commands.turtle_dragon_quests.quest.claim.success": "Claimed rewards for %s",
   "commands.turtle_dragon_quests.quest.claim.fail": "Could not claim rewards for %s",
+  "commands.turtle_dragon_quests.quest.submit.success": "Submitted items for %s",
+  "commands.turtle_dragon_quests.quest.submit.fail": "Could not submit items for %s",
   "commands.turtle_dragon_quests.quest.missing": "Unknown quest %s",
   "commands.turtle_dragon_quests.quest.grant": "Granted %s quest %s",
   "commands.turtle_dragon_quests.quest.complete": "Completed %s quest %s",
