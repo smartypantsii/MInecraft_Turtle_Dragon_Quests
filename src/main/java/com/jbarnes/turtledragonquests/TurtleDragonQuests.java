@@ -14,6 +14,7 @@ import com.jbarnes.turtledragonquests.registry.TDQAttachmentTypes;
 import com.jbarnes.turtledragonquests.registry.TDQCreativeTabs;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
 import com.jbarnes.turtledragonquests.registry.TDQItems;
+import com.jbarnes.turtledragonquests.registry.TDQMenus;
 
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
@@ -29,6 +30,7 @@ public final class TurtleDragonQuests {
         TDQItems.register(modEventBus);
         TDQCreativeTabs.register(modEventBus);
         TDQAttachmentTypes.register(modEventBus);
+        TDQMenus.register(modEventBus);
         modEventBus.addListener(TDQDataRegistries::newDatapackRegistries);
         modEventBus.addListener(TDQNetwork::register);
         modEventBus.addListener(TDQDatapackProvider::gatherData);

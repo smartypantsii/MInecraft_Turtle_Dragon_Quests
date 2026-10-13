@@ -2,6 +2,7 @@ package com.jbarnes.turtledragonquests.event;
 
 import com.jbarnes.turtledragonquests.currency.CurrencyService;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
+import com.jbarnes.turtledragonquests.shop.ShopService;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -17,6 +18,7 @@ public final class PlayerPersistenceEvents {
             QuestEngine.recomputeVisit(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
+            ShopService.sync(player);
         }
     }
 
@@ -26,6 +28,7 @@ public final class PlayerPersistenceEvents {
             QuestEngine.recomputeVisit(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
+            ShopService.sync(player);
         }
     }
 
@@ -35,6 +38,7 @@ public final class PlayerPersistenceEvents {
             QuestEngine.recomputeGather(player);
             CurrencyService.sync(player);
             QuestEngine.sync(player);
+            ShopService.sync(player);
         }
     }
 }

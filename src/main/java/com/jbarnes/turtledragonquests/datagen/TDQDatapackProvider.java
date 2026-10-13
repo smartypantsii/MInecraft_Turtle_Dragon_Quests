@@ -168,6 +168,21 @@ public final class TDQDatapackProvider {
 
         offer(ctx, "buy_rockets", ShopSide.BUY, "firework_rocket", 16, 200L, Optional.empty(), "the_dragon", "end");
         offer(ctx, "buy_chorus_fruit", ShopSide.BUY, "chorus_fruit", 16, 80L, Optional.empty(), "the_dragon", "end");
+
+        ctx.register(offerKey("fixtures/stock_seed"), new ShopOffer(
+                ShopSide.SELL,
+                new SimpleStack(ResourceLocation.withDefaultNamespace("cobblestone"), 1),
+                0L,
+                Optional.of(8),
+                List.of(),
+                Optional.empty()));
+        ctx.register(offerKey("fixtures/stock_deplete"), new ShopOffer(
+                ShopSide.SELL,
+                new SimpleStack(ResourceLocation.withDefaultNamespace("cobblestone"), 1),
+                0L,
+                Optional.of(8),
+                List.of(),
+                Optional.empty()));
     }
 
     private static void offer(

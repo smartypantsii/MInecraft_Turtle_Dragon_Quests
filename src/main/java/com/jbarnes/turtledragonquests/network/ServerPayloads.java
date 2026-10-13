@@ -5,10 +5,12 @@ import com.jbarnes.turtledragonquests.network.c2s.AcceptQuestC2S;
 import com.jbarnes.turtledragonquests.network.c2s.ClaimRewardsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.DepositCoinsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.OpenQuestLogC2S;
+import com.jbarnes.turtledragonquests.network.c2s.OpenShopC2S;
 import com.jbarnes.turtledragonquests.network.c2s.SubmitItemsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.WithdrawCoinsC2S;
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
 import com.jbarnes.turtledragonquests.quest.QuestEngine;
+import com.jbarnes.turtledragonquests.shop.ShopService;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -46,6 +48,14 @@ public final class ServerPayloads {
         ctx.enqueueWork(() -> {
             if (ctx.player() instanceof ServerPlayer player) {
                 QuestEngine.openLog(player);
+            }
+        });
+    }
+
+    public static void openShop(OpenShopC2S payload, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (ctx.player() instanceof ServerPlayer player) {
+                ShopService.open(player);
             }
         });
     }

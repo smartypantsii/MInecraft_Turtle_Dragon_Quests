@@ -22,6 +22,7 @@ public final class DatapackSyncEvents {
             QuestEngine.recomputeVisit(joining);
             QuestEngine.sync(joining);
             CurrencyService.sync(joining);
+            ShopService.sync(joining);
             return;
         }
         MinecraftServer server = event.getPlayerList().getServer();

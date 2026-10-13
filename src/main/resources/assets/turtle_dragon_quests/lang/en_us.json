@@ -76,6 +76,7 @@
 
   "key.categories.turtle_dragon_quests": "Turtle Dragon Quests",
   "key.turtle_dragon_quests.quest_log": "Open Quest Log",
+  "key.turtle_dragon_quests.shop": "Open System Shop",
   "screen.turtle_dragon_quests.quest_log": "Quest Log",
   "screen.turtle_dragon_quests.tdg": "TDG: %s",
   "screen.turtle_dragon_quests.select": "Select a quest.",
@@ -99,5 +100,21 @@
   "screen.turtle_dragon_quests.status.available": "Available",
   "screen.turtle_dragon_quests.status.active": "Active",
   "screen.turtle_dragon_quests.status.completed": "Completed — claim rewards",
-  "screen.turtle_dragon_quests.status.claimed": "Claimed"
+  "screen.turtle_dragon_quests.status.claimed": "Claimed",
+  "screen.turtle_dragon_quests.shop": "System Shop",
+  "screen.turtle_dragon_quests.shop.buy": "Buy",
+  "screen.turtle_dragon_quests.shop.sell": "Sell",
+  "screen.turtle_dragon_quests.shop.stock": "Stock: %s",
+  "screen.turtle_dragon_quests.shop.unlimited": "Unlimited",
+  "screen.turtle_dragon_quests.shop.price": "%s TDG",
+  "screen.turtle_dragon_quests.shop.reject": "Cannot open the System Shop",
+  "screen.turtle_dragon_quests.shop.fail.funds": "Not enough TDG",
+  "screen.turtle_dragon_quests.shop.fail.stock": "Sold out",
+  "screen.turtle_dragon_quests.shop.fail.space": "Inventory is full",
+  "screen.turtle_dragon_quests.shop.fail.wallet": "Wallet cannot hold that TDG",
+  "screen.turtle_dragon_quests.shop.fail.items": "Not enough items to sell",
+  "screen.turtle_dragon_quests.shop.fail.closed": "Shop is not open",
+  "screen.turtle_dragon_quests.shop.fail.cooldown": "Wait before another shop action",
+  "screen.turtle_dragon_quests.shop.ok.buy": "Purchased",
+  "screen.turtle_dragon_quests.shop.ok.sell": "Sold"
 }

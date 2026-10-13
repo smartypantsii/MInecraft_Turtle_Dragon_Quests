@@ -66,6 +66,7 @@ public final class TDQCommands {
                                                 .suggests(QUEST_IDS)
                                                 .executes(TDQCommands::questReset)))))
                 .then(Commands.literal("shop")
+                        .executes(TDQCommands::shop)
                         .then(Commands.literal("stock")
                                 .requires(source -> source.hasPermission(Commands.LEVEL_GAMEMASTERS))
                                 .then(Commands.argument("id", ResourceLocationArgument.id())
@@ -212,6 +213,12 @@ public final class TDQCommands {
         ctx.getSource().sendSuccess(
                 () -> Component.translatable("commands.turtle_dragon_quests.quest.reset", target.getGameProfile().getName(), "all"),
                 true);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int shop(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        ShopService.open(player);
         return Command.SINGLE_SUCCESS;
     }
 

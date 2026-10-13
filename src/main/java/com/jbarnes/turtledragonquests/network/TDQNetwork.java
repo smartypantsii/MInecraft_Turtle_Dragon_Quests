@@ -5,10 +5,12 @@ import com.jbarnes.turtledragonquests.network.c2s.AcceptQuestC2S;
 import com.jbarnes.turtledragonquests.network.c2s.ClaimRewardsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.DepositCoinsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.OpenQuestLogC2S;
+import com.jbarnes.turtledragonquests.network.c2s.OpenShopC2S;
 import com.jbarnes.turtledragonquests.network.c2s.SubmitItemsC2S;
 import com.jbarnes.turtledragonquests.network.c2s.WithdrawCoinsC2S;
 import com.jbarnes.turtledragonquests.network.s2c.ActionResultS2C;
 import com.jbarnes.turtledragonquests.network.s2c.OpenQuestLogS2C;
+import com.jbarnes.turtledragonquests.network.s2c.ShopStateSyncS2C;
 import com.jbarnes.turtledragonquests.network.s2c.QuestDeltaS2C;
 import com.jbarnes.turtledragonquests.network.s2c.QuestProgressSyncS2C;
 import com.jbarnes.turtledragonquests.network.s2c.WalletSyncS2C;
@@ -37,10 +39,12 @@ public final class TDQNetwork {
         registrar.playToServer(ClaimRewardsC2S.TYPE, ClaimRewardsC2S.STREAM_CODEC, ServerPayloads::claim);
         registrar.playToServer(SubmitItemsC2S.TYPE, SubmitItemsC2S.STREAM_CODEC, ServerPayloads::submit);
         registrar.playToServer(OpenQuestLogC2S.TYPE, OpenQuestLogC2S.STREAM_CODEC, ServerPayloads::openQuestLog);
+        registrar.playToServer(OpenShopC2S.TYPE, OpenShopC2S.STREAM_CODEC, ServerPayloads::openShop);
         registrar.playToClient(WalletSyncS2C.TYPE, WalletSyncS2C.STREAM_CODEC, ClientPayloads::wallet);
         registrar.playToClient(ActionResultS2C.TYPE, ActionResultS2C.STREAM_CODEC, ClientPayloads::actionResult);
         registrar.playToClient(QuestProgressSyncS2C.TYPE, QuestProgressSyncS2C.STREAM_CODEC, ClientPayloads::questSync);
         registrar.playToClient(QuestDeltaS2C.TYPE, QuestDeltaS2C.STREAM_CODEC, ClientPayloads::questDelta);
         registrar.playToClient(OpenQuestLogS2C.TYPE, OpenQuestLogS2C.STREAM_CODEC, ClientPayloads::openQuestLog);
+        registrar.playToClient(ShopStateSyncS2C.TYPE, ShopStateSyncS2C.STREAM_CODEC, ClientPayloads::shopState);
     }
 }

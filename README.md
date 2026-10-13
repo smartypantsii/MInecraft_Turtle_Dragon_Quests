@@ -8,7 +8,7 @@ Design for this milestone: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 ## Status
 
-Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five objective types, and the **quest log** are in. **Shop offers** load from datapacks and overworld stock persists; the System Shop menu, catalog use, and keybind `K` land in the next slice. Achievement TDG is still later.
+Items, the **TDG wallet**, **quest definitions**, **quest progress**, all five objective types, the **quest log**, and the **System Shop** are in. Achievement TDG is still later.
 
 ## Requirements (when the skeleton exists)
 

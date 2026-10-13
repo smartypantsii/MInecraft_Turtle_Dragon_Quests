@@ -3,7 +3,11 @@ package com.jbarnes.turtledragonquests.gametest;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.jbarnes.turtledragonquests.TDQ;
+import com.jbarnes.turtledragonquests.currency.CurrencyService;
+import com.jbarnes.turtledragonquests.quest.QuestEngine;
 import com.jbarnes.turtledragonquests.registry.TDQDataRegistries;
+import com.jbarnes.turtledragonquests.shop.ShopMenu;
+import com.jbarnes.turtledragonquests.shop.ShopMenuSnapshot;
 import com.jbarnes.turtledragonquests.shop.ShopOffer;
 import com.jbarnes.turtledragonquests.shop.ShopService;
 import com.jbarnes.turtledragonquests.shop.ShopSide;
@@ -16,6 +20,10 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -78,12 +86,18 @@ public final class ShopGameTests {
 
         Registry<ShopOffer> registry = helper.getLevel().registryAccess()
                 .registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY);
-        helper.assertTrue(registry.size() == 13, "chapter-gated campaign offers");
         helper.assertTrue(registry.getOptional(TDQ.id("buy_steak")).isPresent(), "loaded buy_steak");
         helper.assertTrue(registry.getOptional(TDQ.id("sell_diamonds")).isPresent(), "loaded sell_diamonds");
+        helper.assertTrue(registry.getOptional(TDQ.id("fixtures/stock_seed")).isPresent(), "loaded stock_seed fixture");
+        helper.assertTrue(registry.getOptional(TDQ.id("fixtures/stock_deplete")).isPresent(), "loaded stock_deplete fixture");
+        int campaign = 0;
         for (var entry : registry.entrySet()) {
             roundTrip(helper, entry.getKey().location().toString(), entry.getValue());
+            if (!entry.getKey().location().getPath().startsWith("fixtures/")) {
+                campaign++;
+            }
         }
+        helper.assertTrue(campaign == 13, "chapter-gated campaign offers");
         helper.succeed();
     }
 
@@ -91,23 +105,30 @@ public final class ShopGameTests {
     public static void shop_stock_lazy_seed_and_reload_clamp(GameTestHelper helper) {
         MinecraftServer server = helper.getLevel().getServer();
         ResourceLocation steak = TDQ.id("buy_steak");
-        ResourceLocation diamonds = TDQ.id("sell_diamonds");
+        ResourceLocation seed = TDQ.id("fixtures/stock_seed");
+        helper.assertTrue(
+                helper.getLevel().registryAccess()
+                        .registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY)
+                        .getOptional(seed)
+                        .isPresent(),
+                "stock_seed fixture in registry");
+        ShopWorldState.get(server).forget(seed);
 
         helper.assertValueEqual(Integer.MAX_VALUE, ShopService.remaining(server, steak), "unlimited remaining");
-        helper.assertValueEqual(64, ShopService.remaining(server, diamonds), "lazy seed from JSON");
+        helper.assertValueEqual(8, ShopService.remaining(server, seed), "lazy seed from JSON");
 
-        ShopService.setStock(server, diamonds, 10);
-        helper.assertValueEqual(10, ShopService.remaining(server, diamonds), "admin remaining");
-        ShopService.afterReload(server);
-        helper.assertValueEqual(10, ShopService.remaining(server, diamonds), "reload never raises remaining");
+        ShopWorldState.get(server).setRemaining(seed, 3);
+        helper.assertValueEqual(3, ShopService.remaining(server, seed), "admin remaining");
+        ShopWorldState.afterReload(server);
+        helper.assertValueEqual(3, ShopService.remaining(server, seed), "reload never raises remaining");
 
-        ShopService.setStock(server, diamonds, 100);
-        ShopService.afterReload(server);
-        helper.assertValueEqual(64, ShopService.remaining(server, diamonds), "reload clamps down to JSON");
+        ShopWorldState.get(server).setRemaining(seed, 100);
+        ShopWorldState.afterReload(server);
+        helper.assertValueEqual(8, ShopService.remaining(server, seed), "reload clamps down to JSON");
 
-        ShopService.setStock(server, diamonds, 0);
-        ShopService.afterReload(server);
-        helper.assertValueEqual(0, ShopService.remaining(server, diamonds), "reload never resurrects remaining==0");
+        ShopWorldState.get(server).setRemaining(seed, 0);
+        ShopWorldState.afterReload(server);
+        helper.assertValueEqual(0, ShopService.remaining(server, seed), "reload never resurrects remaining==0");
 
         CompoundTag leftover = new CompoundTag();
         leftover.putInt("schema", 2);
@@ -119,6 +140,112 @@ public final class ShopGameTests {
         helper.assertTrue(saved.getInt("keep_me") == 7, "leftover NBT not clobbered");
 
         helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void shop_buy_insufficient_funds(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        claim(helper, player, "cobble_tithe");
+        CurrencyService.set(player, 0);
+        ShopMenu menu = ShopService.openForTest(player);
+        int index = menu.snapshot().indexOf(TDQ.id("buy_steak"));
+        helper.assertTrue(index >= 0, "buy_steak visible after cobble_tithe");
+        helper.assertFalse(menu.clickMenuButton(player, index), "insufficient funds rejected");
+        helper.assertValueEqual(0L, CurrencyService.get(player), "wallet unchanged");
+        helper.assertValueEqual(0, countItem(player, Items.COOKED_BEEF), "no steak given");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void shop_buy_success_gives_item_and_debits(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        claim(helper, player, "cobble_tithe");
+        CurrencyService.set(player, 10);
+        ShopMenu menu = ShopService.openForTest(player);
+        int index = menu.snapshot().indexOf(TDQ.id("buy_steak"));
+        helper.assertTrue(index >= 0, "buy_steak visible");
+        helper.assertTrue(menu.clickMenuButton(player, index), "buy steak");
+        helper.assertValueEqual(0L, CurrencyService.get(player), "debited 10 TDG");
+        helper.assertValueEqual(8, countItem(player, Items.COOKED_BEEF), "8 cooked beef");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void shop_buy_rejected_if_menu_closed(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        claim(helper, player, "cobble_tithe");
+        CurrencyService.set(player, 10);
+        ShopMenu menu = new ShopMenu(1, player.getInventory(), ShopService.snapshot(player));
+        int index = menu.snapshot().indexOf(TDQ.id("buy_steak"));
+        helper.assertTrue(index >= 0, "buy_steak visible");
+        helper.assertTrue(player.containerMenu != menu, "menu is not open");
+        helper.assertFalse(menu.clickMenuButton(player, index), "closed menu rejected");
+        helper.assertValueEqual(10L, CurrencyService.get(player), "wallet unchanged when closed");
+        helper.assertValueEqual(0, countItem(player, Items.COOKED_BEEF), "no steak when closed");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void shop_sell_extracts_then_credits(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        MinecraftServer server = helper.getLevel().getServer();
+        ShopWorldState.get(server).setRemaining(TDQ.id("sell_diamonds"), 64);
+        claim(helper, player, "diamond_glint");
+        long before = CurrencyService.get(player);
+        ShopMenu menu = ShopService.openForTest(player);
+        int index = menu.snapshot().indexOf(TDQ.id("sell_diamonds"));
+        helper.assertTrue(index >= 0, "sell_diamonds visible after diamond_glint");
+        menu.sellSlots().setItem(0, new ItemStack(Items.DIAMOND, 1));
+        helper.assertTrue(menu.clickMenuButton(player, index), "sell diamond");
+        helper.assertTrue(menu.sellSlots().getItem(0).isEmpty(), "sell slot extracted");
+        helper.assertValueEqual(before + 50L, CurrencyService.get(player), "credited 50 TDG");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void shop_stock_depletes_after_n_units(GameTestHelper helper) {
+        ServerPlayer player = helper.makeMockServerPlayerInLevel();
+        MinecraftServer server = helper.getLevel().getServer();
+        ResourceLocation deplete = TDQ.id("fixtures/stock_deplete");
+        helper.assertTrue(
+                helper.getLevel().registryAccess()
+                        .registryOrThrow(TDQDataRegistries.SHOP_OFFER_REGISTRY)
+                        .getOptional(deplete)
+                        .isPresent(),
+                "stock_deplete fixture in registry");
+        ShopWorldState.get(server).setRemaining(deplete, 1);
+        ShopMenuSnapshot snapshot = new ShopMenuSnapshot(
+                java.util.List.of(deplete),
+                java.util.Map.of(deplete, java.util.Optional.of(1)));
+        ShopMenu menu = ShopService.openForTest(player, snapshot);
+        int index = menu.snapshot().indexOf(deplete);
+        helper.assertTrue(index >= 0, "stock_deplete visible");
+        menu.sellSlots().setItem(0, new ItemStack(Items.COBBLESTONE, 1));
+        helper.assertTrue(menu.clickMenuButton(player, index), "first unit sells");
+        helper.assertValueEqual(0, ShopService.remaining(server, deplete), "stock depleted");
+        helper.runAtTickTime(helper.getTick() + 10, () -> {
+            menu.sellSlots().setItem(0, new ItemStack(Items.COBBLESTONE, 1));
+            helper.assertFalse(menu.clickMenuButton(player, index), "second unit refused");
+            helper.assertTrue(menu.sellSlots().getItem(0).is(Items.COBBLESTONE), "item remains when sold out");
+            helper.succeed();
+        });
+    }
+
+    private static void claim(GameTestHelper helper, ServerPlayer player, String path) {
+        ResourceLocation id = TDQ.id(path);
+        helper.assertTrue(QuestEngine.grant(player, id), "grant " + path);
+        helper.assertTrue(QuestEngine.forceComplete(player, id), "complete " + path);
+        helper.assertTrue(QuestEngine.tryClaim(player, id), "claim " + path);
+    }
+
+    private static int countItem(ServerPlayer player, Item item) {
+        int n = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.is(item)) {
+                n += stack.getCount();
+            }
+        }
+        return n;
     }
 
     private static ShopOffer parse(String json) {

@@ -87,6 +87,15 @@ public final class ShopWorldState extends SavedData {
         setDirty();
     }
 
+    public void forget(ResourceLocation offerId) {
+        if (unreadable) {
+            return;
+        }
+        if (remaining.remove(offerId.toString()) != null) {
+            setDirty();
+        }
+    }
+
     public void applyReload(Registry<ShopOffer> registry) {
         if (unreadable) {
             return;
