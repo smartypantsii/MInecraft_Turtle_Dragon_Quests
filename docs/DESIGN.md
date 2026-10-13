@@ -2,7 +2,7 @@
 
 | Field | Value |
 | --- | --- |
-| **Document** | System quests + System Shop + TDG Coin (v1) |
+| **Document** | System quests + System Shop + TDG Coin (v1). Milestone 0.2 Players tab captured, not implemented. |
 | **Mod** | Turtle Dragon Quests |
 | **Mod ID** | `turtle_dragon_quests` |
 | **Package** | `com.jbarnes.turtledragonquests` |
@@ -10,7 +10,7 @@
 | **Target** | Minecraft 1.21.1, NeoForge 21.1.x |
 | **Author** | TBD |
 | **Date** | 2026-10-12 |
-| **Status** | Draft (revised after review `f309b810`; TDG Coin / System Shop locked) |
+| **Status** | Milestone 1 playable (`0.1.1`). Milestone 0.2 Players tab specified below; do not implement in 0.1.x. |
 | **Design ID** | `f309b810` |
 | **License** | **LGPL-3.0-only** (SPDX) |
 
@@ -73,7 +73,7 @@ Pain if we skip a design pass: mixing Fabric assumptions, putting balances in cl
 - Quest parties, guilds, daily/weekly rotating boards.
 - **Repeatable quests / cooldowns** (no JSON fields in v1; adding them later is a codec-optional bump).
 - Objective **OR-groups** (AND only).
-- Player-to-player auction house.
+- Player-to-player market **in 0.1.x**. Captured as **milestone 0.2** (Players tab, instant buy, not a timed auction). See “Milestone 0.2 — Players tab”.
 - Mixins, unless a blocker appears (none expected for this slice).
 - Porting to Fabric, Forge, or Minecraft versions other than 1.21.1.
 - Feature flags `enable_shop` / `enable_quests` (always on in v1).
@@ -823,6 +823,83 @@ Reject shop mutations and coin withdraw if `player.isSpectator()` or `!player.is
 
 ---
 
+### Milestone 0.2 — Players tab (player listings)
+
+**Status:** specified 2026-10-13 for the next implementation day. **Not in 0.1.x.** Version when this ships: **`0.2.0`**. Do not sneak listings into a 0.1 patch.
+
+This is **not** a datapack `shop_offer` and **not** a timed auction/bid house. Players post stacks for a TDG price; other players buy them instantly.
+
+#### Player-facing
+
+- Same System Shop window (`K`, `/tdq shop`, catalog). Two tabs: **System** (today’s catalog) and **Players**.
+- **System** tab is unchanged: datapack offers, `clickMenuButton`, `SimpleStack`.
+- **Players** tab lists player posts. Sort controls: **Item** and **Player** (seller name). Default sort is Item. Same rows, different order (client sorts the synced snapshot).
+- **List:** on the Players tab, put items in the existing 9 sell slots, type a TDG price, press List. Items leave the player into **escrow**.
+- **Buy:** select a row, Buy. Buyer pays the listing’s TDG, receives the escrowed stack. Seller is credited (offline sellers get a pending payout on next login).
+- **Cancel:** seller selects their own row, Cancel. Stack returns to inventory (or drops if full). Buying your own listing is refused; use Cancel.
+- Spectators and dead players cannot list, buy, or cancel.
+
+#### Frozen rules
+
+| Rule | Value |
+| --- | --- |
+| Currency | **TDG Coin only** (wallet). No barter. |
+| Price | `long` TDG for the **whole listing**, `>= 1`. Not per-item. No `0` gift listings in 0.2. |
+| Stack format | **Full `ItemStack`** (components / enchantments kept). System shop stays `SimpleStack`. Player market is the exception because a components-stripped market cannot sell enchanted gear. |
+| One listing | One `ItemStack`. All occupied sell slots must be `ItemStack.isSameItemSameComponents`. Count is the extracted total, capped at `item.getMaxStackSize()`. Mixed items refuse the list. |
+| SoT | Overworld `SavedData` file **`turtle_dragon_quests_market.dat`** (separate from system stock). NBT `Factory` + `computeIfAbsent`. Schema `1`. |
+| Listing id | `UUID` assigned server-side. Never client-chosen. |
+| Seller | `UUID`. Snapshot also stores last-known name for sort/display. |
+| Caps | Config `market_max_listings_per_player` default **16**, `market_max_listings` default **256**. List fails when either cap is hit. |
+| Escrow | The stack lives in SavedData until buy or cancel. Logout does not return it. |
+| Offline seller | `pendingCredits: Map<UUID, Long>` in the same SavedData. `PlayerLoggedInEvent` calls `CurrencyService.credit` then clears that player’s pending. Credit still clamps to `max_coins`; overflow stays pending and logs WARN. |
+| Anti-dup | Main thread. List reads **server sell slots**, never a C2S `ItemStack`. Buy/Cancel C2S send **listing UUID only**. List C2S sends **price long only**. Validate funds, space, caps, then apply. |
+| `/reload` | Does **not** wipe listings (they are not datapack). Close `ShopMenu` as today. Resync the listing snapshot. |
+| Ops wipe | Stop server, delete `<world>/data/turtle_dragon_quests_market.dat`. Escrowed items and pending credits are gone. Document that loss. |
+| Protocol | Add new payload types. Keep registrar `"1"` if existing records are unchanged; bump `"2"` if any 0.1 payload field order changes. |
+
+#### Payloads (additive)
+
+```java
+public record ListOnMarketC2S(long price) implements CustomPacketPayload {}
+public record BuyMarketListingC2S(UUID listingId) implements CustomPacketPayload {}
+public record CancelMarketListingC2S(UUID listingId) implements CustomPacketPayload {}
+public record MarketListingsSyncS2C(List<MarketListingRow> rows) implements CustomPacketPayload {}
+public record MarketListingRow(UUID id, UUID seller, String sellerName, ItemStack stack, long price) {}
+```
+
+`ItemStack` on S2C uses vanilla `ItemStack.STREAM_CODEC` (listings only). Do not use that codec in datapack `shop_offer` JSON.
+
+Do **not** reuse `clickMenuButton` indexes for player listings (reload/tab races). System tab keeps `clickMenuButton`.
+
+#### UI
+
+- Tab buttons at the top of `ShopScreen`: System / Players.
+- Players tab: listing `ObjectSelectionList` (icon + count + name, seller name, price), sort buttons Item / Player, price `EditBox` (digits), List / Buy / Cancel.
+- 9 sell slots stay; they are the list input on Players and the system-sell input on System.
+- `init()` must create widgets **before** any `populate()` / `setSelected` / `updateButtons` (same class of bug as the 0.1.1 quest-log NPE).
+
+#### Tests (GameTest)
+
+- List extracts matching component stacks and refuses mixed slots.
+- Buy debits buyer, gives stack, credits seller (online).
+- Buy while seller offline: buyer gets items; seller pending credit applies on a later login helper.
+- Cancel returns the stack; listing disappears.
+- Cap: 17th listing by one player fails.
+- System tab still buys steak after `cobble_tithe` (no regression).
+
+Client sort order is not a GameTest; keep a package-private comparator and assert it in a small GameTest helper if cheap, otherwise skip.
+
+#### Non-goals (0.2)
+
+Timed auctions, bids, listing expiry, search box, per-item unit price, player-to-player chat from the tab, taxes/fees, claiming listings into a mailbox block, cross-dimension extra files, Fabric/26.x.
+
+#### Suggested PR split
+
+See PR Plan P11–P13.
+
+---
+
 ### Networking
 
 Protocol `"1"`. Handlers are `(payload, IPayloadContext context)` on the main thread. Register:
@@ -1103,7 +1180,7 @@ Shop after `brew_station`: buy fire res potions (60 TDG); buy nether wart.
 | `the_dragon` | The Dragon | kill | 1 ender dragon | `ender_eyes` | 500 | 1 dragon egg cannot be given reliably — give 16 ender pearls + 1 enchanted golden apple |
 | `after_the_fire` | After the Fire | gather | 1 elytra | `the_dragon` | 250 | 1 shulker shell |
 
-Shop after `the_dragon`: trophy / end-tier buys (rockets, chorus fruit). No player-to-player auction.
+Shop after `the_dragon`: trophy / end-tier buys (rockets, chorus fruit). Player-to-player listings are milestone 0.2, not this campaign table.
 
 **TDG curve (claim totals, spine only, ignoring branches):** 10+10+15+20+15+30+25+40+25+20+50+80+40+100+80+120+500+250 ≈ **1420** TDG if the player finishes the dragon and elytra. Early shop steak (10) is affordable after First Timber + a bit of Chapter 1. Dragon-tier shop items should cost hundreds.
 
@@ -1500,6 +1577,7 @@ Earlier questions (UI form, currency type, stock default, manual claim, prereq o
 | Shop index after `/reload` | Medium | Close `ShopMenu` in fan-out |
 | Protocol bump | Low | Trailing optional on `"1"`; bump `"2"` if order changes |
 | Scope creep | High | Non-goals; split PRs |
+| Player market escrow loss | Medium | Separate `turtle_dragon_quests_market.dat`; document wipe; pending credits on login |
 | Directory typo `MInecraft_...` | Low | Do not rename unless owner asks |
 
 ---
@@ -1526,6 +1604,7 @@ Earlier questions (UI form, currency type, stock default, manual claim, prereq o
 18. **Display name is “Turtle Dragon Quests”.** Item names: Quest Journal, System Shop Catalog, **TDG Coin**.
 19. **Players earn TDG from system quest claims** (TDG + special item/unlock rewards) **and from mapped vanilla achievements.** Shop sell also pays TDG. Mining/killing/crafting do not pay TDG unless a quest or achievement mapping says so. Achievement grants are pay-once (`paidAchievements`); revoke+re-earn does not pay again.
 20. **Shipped quests are a six-chapter campaign** (First Light → Dragon). Only `first_timber` auto-accepts. Later quests unlock on `CLAIMED` prerequisites. Difficulty and TDG scale up. Turtle flavor is coast/drowned/scute; dragon flavor is nether + ender dragon. Campaign visits use biome/dimension, never spawn coordinates.
+21. **Milestone 0.2 is a Players tab on the existing shop** (instant TDG listings, sort by item or player, full `ItemStack` escrow in `turtle_dragon_quests_market.dat`). Not a datapack offer, not a timed auction, not in 0.1.x.
 
 ---
 
@@ -1640,4 +1719,29 @@ flowchart LR
   P7 --> P10[PR10 0.1.0]
   P9 --> P10
   P4b --> P10
+  P10 --> P11[PR11 market SavedData]
+  P11 --> P12[PR12 list/buy/cancel]
+  P9 --> P12
+  P12 --> P13[PR13 Players tab UI]
 ```
+
+### PR 11 — Market SavedData and escrow (no UI)
+
+- **Title:** `feat: player market listings SavedData and escrow`
+- **Files/components:** `MarketListing`, `MarketWorldState` (`turtle_dragon_quests_market.dat`), pending credits, config caps, GameTests for persist/cap/schema. No screen changes.
+- **Depends on:** PR 10 (playable 0.1.x).
+- **Description:** NBT Factory + `computeIfAbsent`. Full `ItemStack` in NBT. Do not touch `shop_offer` JSON.
+
+### PR 12 — List, buy, cancel, login payout
+
+- **Title:** `feat: list buy and cancel player market listings`
+- **Files/components:** `MarketService`, `ListOnMarketC2S` / `BuyMarketListingC2S` / `CancelMarketListingC2S` / `MarketListingsSyncS2C`, login pending credit, ShopMenu list-from-sell-slots. GameTests: list, buy online, buy offline+login, cancel, mixed-slot refuse, system steak regression.
+- **Depends on:** PR 11, PR 9.
+- **Description:** No C2S `ItemStack`. Price only on List. Buy/Cancel by listing UUID.
+
+### PR 13 — Players tab, sort, price field
+
+- **Title:** `feat: System Shop Players tab with item and player sort`
+- **Files/components:** `ShopScreen` tabs, sort buttons, price `EditBox`, List/Buy/Cancel widgets (create buttons before populate), lang. Version `0.2.0`.
+- **Depends on:** PR 12.
+- **Description:** Default sort Item. Client sorts `MarketListingsSyncS2C` rows. Keep System tab on `clickMenuButton`.

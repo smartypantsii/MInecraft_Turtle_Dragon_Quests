@@ -125,6 +125,20 @@ Final classes with static methods (`CurrencyService`, `QuestEngine`, `ShopServic
 - GameTests start with currency / kill / shop in later PRs
 - Logout persistence and LAN wallet isolation are **manual** checks
 
-## Non-goals (v1)
+## Non-goals (v1 / 0.1.x)
 
 No mixins, custom mobs, dimensions, shop block, custom achievement UI, FTB Quests, economy SPIs, repeatable quests, OR-groups, or ports off 1.21.1 NeoForge.
+
+Do **not** implement player-to-player listings in a 0.1.x patch.
+
+## Milestone 0.2 — Players tab (specified, not shipped)
+
+Full contract: `docs/DESIGN.md` section **Milestone 0.2 — Players tab**. Summary:
+
+- Same shop window; tabs **System** (datapack, unchanged) and **Players**.
+- Instant TDG buy (not bids/auctions). Sort snapshot by **Item** or **Player**.
+- List from the 9 sell slots; price `>= 1` TDG for the whole stack; full `ItemStack` (keep components).
+- Escrow + pending offline credits in `turtle_dragon_quests_market.dat` (not `turtle_dragon_quests_shop.dat`).
+- List/Buy/Cancel payloads; Buy/Cancel send listing UUID only; List sends price only. No C2S `ItemStack`.
+- Caps: 16 listings/player, 256 server-wide (config).
+- PRs 11–13 in DESIGN. Ship as **`0.2.0`**.

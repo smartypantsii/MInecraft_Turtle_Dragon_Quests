@@ -10,6 +10,8 @@ Design: [`docs/DESIGN.md`](docs/DESIGN.md).
 
 Playable 0.1.1 slice: six-chapter campaign, quest log, System Shop buy/sell, TDG wallet, and pay-once TDG from mapped vanilla advancements.
 
+**Next (not shipped):** milestone **0.2** Players tab — players list items for TDG, other players buy them, sort by item or seller. Spec: [`docs/DESIGN.md`](docs/DESIGN.md) “Milestone 0.2 — Players tab”.
+
 ## Requirements
 
 | Piece | Pin |
@@ -84,6 +86,7 @@ Example achievement mapping (`achievement_reward/story_mine_stone.json`):
 - Player quests: `/tdq quest reset <player> all`
 - Player wallet: `/tdq currency set <player> 0`
 - System Shop stock: stop the server, delete `<world>/data/turtle_dragon_quests_shop.dat`, restart (stock lazy-reseeds from JSON)
+- Player market (0.2, not shipped): delete `<world>/data/turtle_dragon_quests_market.dat` (escrowed items and pending credits are lost)
 
 ## Build
 
